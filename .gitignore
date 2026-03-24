@@ -1,16 +1,9 @@
-# Compiled class file
+# ─── Compilados ───────────────────────────
 *.class
+target/
+build/
 
-# Log file
-*.log
-
-# BlueJ files
-*.ctxt
-
-# Mobile Tools for Java (J2ME)
-.mtj.tmp/
-
-# Package Files #
+# ─── Empaquetados ─────────────────────────
 *.jar
 *.war
 *.nar
@@ -19,6 +12,28 @@
 *.tar.gz
 *.rar
 
-# virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
-hs_err_pid*
-replay_pid*
+# ─── Logs ────────────────────────────────
+*.log
+
+# ─── NetBeans ───────────────────────────
+nbproject/private/
+nbbuild/
+dist/
+nbdist/
+.nb-gradle/
+
+# ─── IDEs ───────────────────────────────
+.vscode/
+.idea/
+
+# ─── Sistema operativo ───────────────────
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# ─── Datos locales ──────────────────────
+data/
+
+# ─── Config sensible ────────────────────
+*.env
+config/properties.ini
