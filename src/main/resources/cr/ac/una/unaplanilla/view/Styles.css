@@ -1,7 +1,177 @@
-/*
- * Empty Stylesheet file.
- */
+*{
+    -fx-base-color-focus:#09b6bc;
+    -fx-base-color-unfocus:#4d4d4d;
+    -fx-base-color-etiquetas:#4d4d4d;
+    -fx-base-color-texto:#000000;
+    -fx-base-color-titulos:#51b6cd;
+    -fx-base-color-error:#d34336;
+    -fx-base-color-id:#00c853;
+    -mfx-main:-fx-base-color-focus;
+    -mfx-purple:-fx-base-color-focus;
+}
 
-.mainFxmlClass {
+.mfx-text-field, .mfx-password-field{
+    -mfx-float-mode: BORDER;
+    -fx-font-size:14px;
+    -fx-pref-heiht:40px;
+    -fx-min-height:40px;
+    -fx-max-height:40px;
+    -fx-alignment:TOP_LEFT;
+    -fx-text-fill: -fx-base-color-texto;
+    -fx-prompt-txt-fill: -fx-base-color-etiquetas;
+}
 
+.mfx-text-field .text-field, .mfx-password-field .text-field{
+    -fx-highlight-fill: -fx-base-color-focus;
+}
+
+.mfx-text-field:floating .floating-text, .mfx-password-field:floating .floating-text{
+    -fx-font-weight:bold;
+}
+
+.mfx-password-field:masked{
+    -fx-font-size: 8px;
+}
+
+.mfx-password-field:masked .floating-text{
+    -fx-font-size: 14px;
+}
+
+.mfx-button{
+    -mfx-button-type:RAISED;
+    -mfx-opacity:0.8;
+    -fx-content-display:left;
+    -fx-text-fill:white;
+    -fx-font-weight:bold;
+    -fx-font-size:14px;
+    -fx-alignment:CENTER_LEFT;
+}
+
+.button:hover{
+    
+    -fx-background-color:#ff6d00;
+    
+}
+
+.mfx-button:hover{
+    
+    -fx-background-color:#ff6d00;
+    
+}
+
+.mfx-checkbox {
+    -fx-font-size: 14.0px;
+    -fx-pref-height: 26px;
+    -fx-min-height: 26px;
+    -fx-max-height: 26px;
+    -fx-text-fill: -fx-base-color-etiquetas;
+    -mfx-main: -fx-base-color-focus;
+    -mfx-secondary: -fx-base-color-unfocus;
+}
+
+.mfx-radio-button{
+    -fx-font-size: 14.0px;
+    -fx-pref-height: 26px;
+    -fx-min-height: 26px;
+    -fx-max-height: 26px;
+    -fx-text-fill: -fx-base-color-etiquetas;
+    -mfx-main: -fx-base-color-focus;
+    -mfx-secondary: -fx-base-color-unfocus;
+}
+
+.mfx-date-picker{
+    -fx-font-size: 14.0px;
+    -fx-pref-height: 40px;
+    -fx-min-height: 40px;
+    -fx-max-height: 40px;
+}
+
+.mfx-date-cell:current {
+  -fx-text-fill: -fx-base-color-focus;
+}
+
+.mfx-date-cell:selected {
+  -fx-background-color: -fx-base-color-focus;
+}
+
+/*******************BOTONES*********/
+
+.jfx-btn-nuevo, .jfx-btn-nuevo:armed, .jfx-btn-nuevo:focused{
+    -fx-background-color:#2196f3;
+}
+
+.jfx-btn-nuevo > ImageView{
+    -fx-image: url(../resource/Agregar-48.png);
+}
+
+.jfx-btn-buscar, .jfx-btn-buscar:armed, .jfx-btn-buscar:focused{
+    -fx-background-color:#3091c2;
+}
+
+.jfx-btn-buscar > ImageView{
+    -fx-image: url(../resource/Buscar-48.png);
+}
+
+
+.jfx-btn-eliminar, .jfx-btn-eliminar:armed, .jfx-btn-eliminar:focused{
+    -fx-background-color:#ff0000;
+}
+
+.jfx-btn-eliminar > ImageView{
+    -fx-image: url(../resource/Eliminar-48.png);
+}
+
+.jfx-btn-guardar, .jfx-btn-guardar:armed, .jfx-btn-guardar:focused{
+    -fx-background-color:#00cc33;
+}
+
+.jfx-btn-guardar > ImageView{
+    -fx-image: url(../resource/Guardar-48.png);
+}
+
+/**********Paneles***************/
+
+.jfx-panelfondo{
+    -fx-background-color:#2196f3;
+    -fx-opacity:0.8;
+}
+
+.jfx-panelfondo > AnchorPane{
+    -fx-background-color:white;
+    -fx-border-color:#97a692;
+    -fx-border-width:10px;
+}
+
+.jfx-contenedor-principal{
+    -fx-background-color:white;
+    -fx-background-radius:4.0;
+    -fx-padding: 25 15 15 15;
+   -fx-effect:dropshadow(gaussian, rgb(0.0, 0.0, 0.0, 0.15), 10.0, 0.7, 0.0,1.5);
+}
+
+/*********************Etiquetas*****************/
+
+.jfx-titulo-label{
+    -fx-font-size:24px;
+    -fx-opacity:0.8;
+    -fx-padding: 5 0 5 0;
+    -fx-text-fill:-fx-base-color-titulos;
+    -fx-font-weight:bold;
+    -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.6), 2, 0.0, 1, 2);
+    
+}
+
+/*****************************+Campos de Textos*******************************/
+
+.jfx-txt-id{
+    -fx-prompt-text-fill:-fx-base-color-id;
+    -fx-border-color:-fx-base-color-id;
+}
+
+.jfx-txt-id .floating-text, .jfx-text-id:focus-within .floating-text{
+    -fx-prompt-text-fill:-fx-base-color-id;
+}
+
+.jfx-txt-id:focus-whithin{
+    -fx-border-color:-fx-base-color-id;
 }
