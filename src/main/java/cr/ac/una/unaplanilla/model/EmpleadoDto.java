@@ -40,6 +40,9 @@ public class EmpleadoDto {
         this.fechaIngreso = new SimpleObjectProperty(LocalDate.now());
         this.fechaSalida = new SimpleObjectProperty();
         this.activo = new SimpleBooleanProperty(true);
+        
+        /*Eliminar*/
+        this.nombre.set("Johan");
     }
     
     public Long getId() {

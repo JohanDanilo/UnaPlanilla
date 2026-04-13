@@ -9,6 +9,7 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.Separator?>
+<?import javafx.scene.control.ToggleGroup?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.HBox?>
@@ -27,17 +28,20 @@
                         <Insets left="5.0" right="5.0" />
                      </VBox.margin>
                      <children>
-                        <VBox maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" spacing="10.0" HBox.hgrow="ALWAYS">
+                        <VBox maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="287.0" prefWidth="230.0" spacing="10.0" HBox.hgrow="ALWAYS">
                            <children>
-                              <MFXTextField floatMode="BORDER" floatingText="Id" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" styleClass="jfx-txt-id" VBox.vgrow="ALWAYS" />
-                              <MFXTextField floatMode="BORDER" floatingText="Nombre" layoutX="15.0" layoutY="15.0" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" VBox.vgrow="ALWAYS" />
-                              <MFXTextField floatMode="BORDER" floatingText="Primer apellido" layoutX="15.0" layoutY="166.0" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" VBox.vgrow="ALWAYS" />
-                              <MFXTextField floatMode="BORDER" floatingText="Segundo apellido" layoutX="15.0" layoutY="216.0" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" VBox.vgrow="ALWAYS" />
-                              <MFXTextField floatMode="BORDER" floatingText="Cédula" layoutX="15.0" layoutY="241.0" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" VBox.vgrow="ALWAYS" />
+                              <MFXTextField fx:id="txtId" floatMode="BORDER" floatingText="Id" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" onKeyPressed="#onKeyPressedTxtId" styleClass="jfx-txt-id" VBox.vgrow="ALWAYS" />
+                              <MFXTextField fx:id="txtNombre" floatMode="BORDER" floatingText="Nombre" layoutX="15.0" layoutY="15.0" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" VBox.vgrow="ALWAYS" />
+                              <MFXTextField fx:id="txtApellido" floatMode="BORDER" floatingText="Primer apellido" layoutX="15.0" layoutY="166.0" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" VBox.vgrow="ALWAYS" />
+                              <MFXTextField fx:id="txtSegundoApellido" floatMode="BORDER" floatingText="Segundo apellido" layoutX="15.0" layoutY="216.0" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" VBox.vgrow="ALWAYS" />
+                              <MFXTextField fx:id="txtCedula" floatMode="BORDER" floatingText="Cédula" layoutX="15.0" layoutY="241.0" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" VBox.vgrow="ALWAYS" />
                               <HBox maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" spacing="10.0" VBox.vgrow="ALWAYS">
                                  <children>
-                                    <MFXRadioButton maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" text="Masculino" HBox.hgrow="ALWAYS" />
-                                    <MFXRadioButton layoutX="10.0" layoutY="10.0" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" text="Femenino" HBox.hgrow="ALWAYS" />
+                                    <MFXRadioButton fx:id="rdbMasculino" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" text="Masculino" HBox.hgrow="ALWAYS">
+                                       <toggleGroup>
+                                          <ToggleGroup fx:id="tggGenero" />
+                                       </toggleGroup></MFXRadioButton>
+                                    <MFXRadioButton fx:id="rdbFemenino" layoutX="10.0" layoutY="10.0" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" text="Femenino" toggleGroup="$tggGenero" HBox.hgrow="ALWAYS" />
                                  </children>
                               </HBox>
                            </children>
@@ -46,23 +50,23 @@
                            </padding>
                         </VBox>
                         <Separator orientation="VERTICAL" prefHeight="200.0" />
-                        <VBox layoutX="10.0" layoutY="10.0" spacing="10.0" HBox.hgrow="ALWAYS">
+                        <VBox layoutX="10.0" layoutY="10.0" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="287.0" prefWidth="211.0" spacing="10.0" HBox.hgrow="ALWAYS">
                            <children>
-                              <HBox spacing="10.0" VBox.vgrow="ALWAYS">
+                              <HBox maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" spacing="10.0" VBox.vgrow="ALWAYS">
                                  <children>
-                                    <MFXCheckbox maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" text="Administrador" HBox.hgrow="ALWAYS" />
-                                    <MFXCheckbox layoutX="10.0" layoutY="10.0" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" text="Activo" HBox.hgrow="ALWAYS" />
+                                    <MFXCheckbox fx:id="cbxAdministrador" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" onAction="#onCbxAdministrador" text="Administrador" />
+                                    <MFXCheckbox fx:id="cbxActivo" layoutX="10.0" layoutY="10.0" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" text="Activo" />
                                  </children>
                               </HBox>
                               <HBox layoutX="10.0" layoutY="10.0" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" spacing="10.0" VBox.vgrow="ALWAYS">
                                  <children>
-                                    <MFXDatePicker floatMode="BORDER" floatingText="Fecha ingreso" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" HBox.hgrow="ALWAYS" />
-                                    <MFXDatePicker floatMode="BORDER" floatingText="Fecha salida" layoutX="10.0" layoutY="10.0" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" HBox.hgrow="ALWAYS" />
+                                    <MFXDatePicker fx:id="dprFechaIngreso" floatMode="BORDER" floatingText="Fecha ingreso" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" HBox.hgrow="ALWAYS" />
+                                    <MFXDatePicker fx:id="dprFechaSalida" floatMode="BORDER" floatingText="Fecha salida" layoutX="10.0" layoutY="10.0" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" HBox.hgrow="ALWAYS" />
                                  </children>
                               </HBox>
-                              <MFXTextField floatMode="BORDER" floatingText="Correo" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" VBox.vgrow="ALWAYS" />
-                              <MFXTextField floatMode="BORDER" floatingText="Usuario" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" VBox.vgrow="ALWAYS" />
-                              <MFXPasswordField floatMode="BORDER" floatingText="Clave" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" VBox.vgrow="ALWAYS">
+                              <MFXTextField fx:id="txtCorreo" floatMode="BORDER" floatingText="Correo" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" VBox.vgrow="ALWAYS" />
+                              <MFXTextField fx:id="txtUsuario" floatMode="BORDER" floatingText="Usuario" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" VBox.vgrow="ALWAYS" />
+                              <MFXPasswordField fx:id="txtClave" floatMode="BORDER" floatingText="Clave" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" VBox.vgrow="ALWAYS">
                                  <VBox.margin>
                                     <Insets />
                                  </VBox.margin>
@@ -80,22 +84,22 @@
                   </HBox>
                   <HBox alignment="CENTER" layoutX="10.0" layoutY="33.0" spacing="5.0" VBox.vgrow="ALWAYS">
                      <children>
-                        <MFXButton maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" styleClass="jfx-btn-nuevo" text="Nuevo" HBox.hgrow="ALWAYS">
+                        <MFXButton maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" onAction="#onBtnNuevo" styleClass="jfx-btn-nuevo" text="Nuevo" HBox.hgrow="ALWAYS">
                            <graphic>
                               <ImageView fitHeight="35.0" fitWidth="35.0" pickOnBounds="true" preserveRatio="true" />
                            </graphic>
                         </MFXButton>
-                        <MFXButton layoutX="30.0" layoutY="15.0" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" styleClass="jfx-btn-buscar" text="Buscar" HBox.hgrow="ALWAYS">
+                        <MFXButton layoutX="30.0" layoutY="15.0" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" onAction="#onBtnBuscar" styleClass="jfx-btn-buscar" text="Buscar" HBox.hgrow="ALWAYS">
                            <graphic>
                               <ImageView fitHeight="35.0" fitWidth="35.0" pickOnBounds="true" preserveRatio="true" />
                            </graphic>
                         </MFXButton>
-                        <MFXButton layoutX="303.0" layoutY="15.0" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" styleClass="jfx-btn-eliminar" text="Eliminar" HBox.hgrow="ALWAYS">
+                        <MFXButton layoutX="303.0" layoutY="15.0" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" onAction="#onBtnEliminar" styleClass="jfx-btn-eliminar" text="Eliminar" HBox.hgrow="ALWAYS">
                            <graphic>
                               <ImageView fitHeight="35.0" fitWidth="35.0" pickOnBounds="true" preserveRatio="true" />
                            </graphic>
                         </MFXButton>
-                        <MFXButton layoutX="394.0" layoutY="15.0" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" styleClass="jfx-btn-guardar" text="Guardar" HBox.hgrow="ALWAYS">
+                        <MFXButton layoutX="394.0" layoutY="15.0" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" onAction="#onBtnGuardar" styleClass="jfx-btn-guardar" text="Guardar" HBox.hgrow="ALWAYS">
                            <graphic>
                               <ImageView fitHeight="35.0" fitWidth="35.0" pickOnBounds="true" preserveRatio="true" />
                            </graphic>

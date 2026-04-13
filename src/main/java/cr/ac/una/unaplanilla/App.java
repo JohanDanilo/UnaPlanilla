@@ -1,8 +1,6 @@
 package cr.ac.una.unaplanilla;
 
 import cr.ac.una.unaplanilla.util.FlowController;
-import io.github.palexdev.materialfx.css.themes.MFXThemeManager;
-import io.github.palexdev.materialfx.css.themes.Themes;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
