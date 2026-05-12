@@ -9,9 +9,8 @@ import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 
-
 public class EmpleadoDto {
-    
+
     private StringProperty id;
     private StringProperty nombre;
     private StringProperty primerApellido;
@@ -25,6 +24,7 @@ public class EmpleadoDto {
     private ObjectProperty<LocalDate> fechaIngreso;
     private ObjectProperty<LocalDate> fechaSalida;
     private BooleanProperty activo;
+    private Long version;
 
     public EmpleadoDto() {
         this.id = new SimpleStringProperty("");
@@ -32,23 +32,48 @@ public class EmpleadoDto {
         this.primerApellido = new SimpleStringProperty("");
         this.segundoApellido = new SimpleStringProperty("");
         this.cedula = new SimpleStringProperty("");
-        this.genero = new SimpleObjectProperty("");
+        this.genero = new SimpleObjectProperty<>("");
         this.correo = new SimpleStringProperty("");
         this.administrador = new SimpleBooleanProperty(false);
         this.usuario = new SimpleStringProperty("");
         this.clave = new SimpleStringProperty("");
-        this.fechaIngreso = new SimpleObjectProperty(LocalDate.now());
-        this.fechaSalida = new SimpleObjectProperty();
+        this.fechaIngreso = new SimpleObjectProperty<>(LocalDate.now());
+        this.fechaSalida = new SimpleObjectProperty<>();
         this.activo = new SimpleBooleanProperty(true);
+    }
+
+    public EmpleadoDto(Empleado empleado) {
+        this();
+        this.id.set(empleado.getId().toString());
+        this.nombre.set(empleado.getNombre());
+        this.primerApellido.set(empleado.getPrimerApellido());
+        this.segundoApellido.set(empleado.getSegundoApellido());
+        this.administrador.set(empleado.getAdministrador().equals("S"));
+        this.activo.set(empleado.getEstado().equals("A"));
+        this.cedula.set(empleado.getCedula());
+        this.genero.set(empleado.getGenero());
+        this.correo.set(empleado.getCorreo());
+        //this.usuario.set(empleado.getUsuario());
+        //this.clave.set(empleado.getClave());
         
-        /*Eliminar*/
-        this.nombre.set("Johan");
+        this.usuario.set(
+            Objects.toString(empleado.getUsuario(), "")
+        );
+
+        this.clave.set(
+            Objects.toString(empleado.getClave(), "")
+        );
+        this.fechaIngreso.set(empleado.getFechaIngreso());
+        this.fechaSalida.set(empleado.getFechaSalida());
+        this.version = empleado.getVersion();
     }
     
+    
+
     public Long getId() {
-        if(this.id.get() != null && this.id.get().isBlank()){   /*valida que id no esté vacio ni en blanco*/
-            return Long.valueOf(this.id.get());               
-        }else{
+        if (this.id.get() != null && !this.id.get().isBlank()) {
+            return Long.valueOf(this.id.get());
+        } else {
             return null;
         }
     }
@@ -110,24 +135,35 @@ public class EmpleadoDto {
     }
 
     public void setAdministrador(Boolean administrador) {
-        this.administrador.set(false);
+        this.administrador.set(administrador);
     }
 
     public String getUsuario() {
         return usuario.get();
     }
 
+//    public void setUsuario(String usuario) {
+//        this.usuario.set(usuario);
+//    }
     public void setUsuario(String usuario) {
-        this.usuario.set(usuario);
-    }
+    this.usuario.set(
+        Objects.toString(usuario, "")
+    );
+}
 
     public String getClave() {
         return clave.get();
     }
 
+//    public void setClave(String clave) {
+//        this.clave.set(clave);
+//    }
+    
     public void setClave(String clave) {
-        this.clave.set(clave);
-    }
+    this.clave.set(
+        Objects.toString(clave, "")
+    );
+}
 
     public LocalDate getFechaIngreso() {
         return fechaIngreso.get();
@@ -150,9 +186,8 @@ public class EmpleadoDto {
     }
 
     public void setActivo(Boolean activo) {
-        this.activo.set(false);
+        this.activo.set(activo);
     }
-
 
     public StringProperty getIdProperty() {
         return id;
@@ -205,8 +240,18 @@ public class EmpleadoDto {
     public BooleanProperty getActivoProperty() {
         return activo;
     }
+
+    public Long getVersion() {
+        return version;
+    }
+
+    public void setVersion(Long version) {
+        this.version = version;
+    }
     
     
+
+
     @Override
     public int hashCode() {
         int hash = 3;
@@ -216,23 +261,17 @@ public class EmpleadoDto {
 
     @Override
     public boolean equals(Object obj) {
-        if (this == obj) {
-            return true;
-        }
-        if (obj == null) {
-            return false;
-        }
-        if (getClass() != obj.getClass()) {
-            return false;
-        }
+        if (this == obj) return true;
+        if (obj == null || getClass() != obj.getClass()) return false;
         final EmpleadoDto other = (EmpleadoDto) obj;
-        return true;
+        return Objects.equals(this.id.get(), other.id.get());
     }
 
     @Override
     public String toString() {
-        return "EmpleadoDto{" + "id=" + id + ", nombre=" + nombre + ", primerApellido=" + primerApellido + ", cedula=" + cedula + '}';
+        return "EmpleadoDto{id=" + id.get()
+                + ", nombre=" + nombre.get()
+                + ", primerApellido=" + primerApellido.get()
+                + ", cedula=" + cedula.get() + "}";
     }
- 
-    
 }

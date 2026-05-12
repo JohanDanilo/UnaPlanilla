@@ -35,17 +35,12 @@ public class PrimaryController extends Controller implements Initializable {
         FlowController.getInstance().goView("TiposPlanillaView");
     }
     
-    // Agrega este método dentro de tu clase PrimaryController
 
     @FXML
     private void onActionBtnCerrar(ActionEvent event){
-        /*
-         * TODO: Cuando haya sesión real, limpia también el objeto Usuario:
-         *   AppContext.getInstance().delete("usuario");
-         */
         
         FlowController.getInstance().limpiarLoader("LoginView");
-        getStage().close();  // en lugar de this.stage.close()
+        getStage().close();
         FlowController.getInstance().goViewInWindow("LoginView");
 }
     

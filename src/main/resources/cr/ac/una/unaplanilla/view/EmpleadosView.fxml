@@ -54,8 +54,8 @@
                            <children>
                               <HBox maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" spacing="10.0" VBox.vgrow="ALWAYS">
                                  <children>
-                                    <MFXCheckbox fx:id="cbxAdministrador" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" onAction="#onCbxAdministrador" text="Administrador" />
-                                    <MFXCheckbox fx:id="cbxActivo" layoutX="10.0" layoutY="10.0" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" text="Activo" />
+                                    <MFXCheckbox fx:id="cbxAdministrador" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" onAction="#onCbxAdministrador" styleClass="mfx-checkbox2" text="Administrador" />
+                                    <MFXCheckbox fx:id="cbxActivo" layoutX="10.0" layoutY="10.0" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" styleClass="mfx-checkbox2" text="Activo" />
                                  </children>
                               </HBox>
                               <HBox layoutX="10.0" layoutY="10.0" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" spacing="10.0" VBox.vgrow="ALWAYS">

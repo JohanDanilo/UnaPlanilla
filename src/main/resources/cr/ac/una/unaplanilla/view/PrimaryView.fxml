@@ -42,6 +42,9 @@
                   </ImageView>
                   <Label fx:id="userLbl" alignment="CENTER" contentDisplay="CENTER" maxWidth="1.7976931348623157E308" prefHeight="38.0" text="Username" textAlignment="CENTER" />
                </children>
+               <padding>
+                  <Insets left="10.0" />
+               </padding>
             </HBox>
 
             <MFXButton maxWidth="1.7976931348623157E308" onAction="#onActionBtnEmpleados" text="Empleados">

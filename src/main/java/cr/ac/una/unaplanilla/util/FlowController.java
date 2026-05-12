@@ -123,12 +123,14 @@ public class FlowController {
                 VBox vBox = (VBox)borderPane.getCenter();
                 vBox.getChildren().clear();
                 vBox.getChildren().add(loader.getRoot());
+                MFXThemeManager.addOn(stage.getScene(), Themes.DEFAULT, Themes.LEGACY);
                 break;
             case "Top":
                 BorderPane borderPane2 = (BorderPane) stage.getScene().getRoot();
                 HBox hBox = (HBox)borderPane2.getTop();
                 hBox.getChildren().clear();
                 hBox.getChildren().add(loader.getRoot());
+                MFXThemeManager.addOn(stage.getScene(), Themes.DEFAULT, Themes.LEGACY);
                 break;
             default:
                 break;

@@ -1,9 +1,11 @@
 package cr.ac.una.unaplanilla.controller;
 
 import cr.ac.una.unaplanilla.model.EmpleadoDto;
+import cr.ac.una.unaplanilla.service.EmpleadoService;
 import cr.ac.una.unaplanilla.util.BindingUtils;
 import cr.ac.una.unaplanilla.util.Formato;
 import cr.ac.una.unaplanilla.util.Mensaje;
+import cr.ac.una.unaplanilla.util.Respuesta;
 import io.github.palexdev.materialfx.controls.MFXCheckbox;
 import io.github.palexdev.materialfx.controls.MFXComboBox;
 import io.github.palexdev.materialfx.controls.MFXDatePicker;
@@ -70,8 +72,6 @@ public class EmpleadosController extends Controller implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        // TODO
-        //txtNombre.textProperty().bindBidirectional(this.empleado.getNombreProperty());
         rdbFemenino.setUserData("F");
         rdbMasculino.setUserData("M");
         txtId.delegateSetTextFormatter(Formato.getInstance().integerFormat());
@@ -84,8 +84,9 @@ public class EmpleadosController extends Controller implements Initializable {
         txtUsuario.delegateSetTextFormatter(Formato.getInstance().letrasFormat(30));
         this.empleado = new EmpleadoDto();
         bindEmpleado();
-        cargarValoresDefecto();
         indicarRequeridos();
+        cargarValoresDefecto();
+
     }
 
     @Override
@@ -95,27 +96,90 @@ public class EmpleadosController extends Controller implements Initializable {
     private void bindEmpleado() {
         try {
             empleadoProperty.addListener((ov, oldVal, newVal) -> {
+
                 if (oldVal != null) {
+
                     txtId.textProperty().unbind();
+
                     txtNombre.textProperty().unbindBidirectional(oldVal.getNombreProperty());
+                    txtApellido.textProperty().unbindBidirectional(oldVal.getPrimerApellidoProperty());
+                    txtSegundoApellido.textProperty().unbindBidirectional(oldVal.getSegundoApellidoProperty());
+
+                    txtCedula.textProperty().unbindBidirectional(oldVal.getCedulaProperty());
+
+                    txtCorreo.textProperty().unbindBidirectional(oldVal.getCorreoProperty());
+
+                    txtUsuario.textProperty().unbindBidirectional(oldVal.getUsuarioProperty());
+
+                    txtClave.textProperty().unbindBidirectional(oldVal.getClaveProperty());
+
+                    dprFechaIngreso.valueProperty().unbindBidirectional(oldVal.getFechaIngresoProperty());
+
                     dprFechaSalida.valueProperty().unbindBidirectional(oldVal.getFechaSalidaProperty());
+
+                    cbxAdministrador.selectedProperty().unbindBidirectional(oldVal.getAdministradorProperty());
+
                     cbxActivo.selectedProperty().unbindBidirectional(oldVal.getActivoProperty());
-                    BindingUtils.unbindToggleGroupToProperty(tggGenero, oldVal.getGeneroProperty());
+
+                    BindingUtils.unbindToggleGroupToProperty(
+                            tggGenero,
+                            oldVal.getGeneroProperty()
+                    );
                 }
+
                 if (newVal != null) {
-                    if (newVal.getIdProperty().get() != null
-                            && !newVal.getIdProperty().get().isBlank()) {
-                        txtId.textProperty().bindBidirectional(newVal.getIdProperty());
+
+                    if (newVal.getIdProperty().get() != null && !newVal.getIdProperty().get().isBlank()) {
+                        txtId.textProperty().bind(newVal.getIdProperty());
                     }
 
                     txtNombre.textProperty().bindBidirectional(newVal.getNombreProperty());
-                    dprFechaSalida.valueProperty().bindBidirectional(newVal.getFechaSalidaProperty());
-                    cbxActivo.selectedProperty().bindBidirectional(newVal.getActivoProperty());
-                    BindingUtils.bindToggleGroupToProperty(tggGenero, newVal.getGeneroProperty());
+
+                    txtApellido.textProperty().bindBidirectional(newVal.getPrimerApellidoProperty());
+
+                    txtSegundoApellido.textProperty().bindBidirectional(newVal.getSegundoApellidoProperty());
+
+                    txtCedula.textProperty().bindBidirectional(newVal.getCedulaProperty());
+
+                    txtCorreo.textProperty().bindBidirectional(newVal.getCorreoProperty());
+
+                    txtUsuario.textProperty().bindBidirectional(newVal.getUsuarioProperty());
+
+                    txtClave.textProperty().bindBidirectional(newVal.getClaveProperty());
+
+                    dprFechaIngreso.valueProperty().bindBidirectional(
+                            newVal.getFechaIngresoProperty()
+                    );
+
+                    dprFechaSalida.valueProperty().bindBidirectional(
+                            newVal.getFechaSalidaProperty()
+                    );
+
+                    cbxAdministrador.selectedProperty().bindBidirectional(
+                            newVal.getAdministradorProperty()
+                    );
+
+                    cbxActivo.selectedProperty().bindBidirectional(
+                            newVal.getActivoProperty()
+                    );
+
+                    BindingUtils.bindToggleGroupToProperty(
+                            tggGenero,
+                            newVal.getGeneroProperty()
+                    );
                 }
             });
+
         } catch (Exception ex) {
-            new Mensaje().showModal(Alert.AlertType.ERROR, "Eror al realizar el bindeo", getStage(), "Ocurrio un error al realizar el bindeo");
+            Logger.getLogger(EmpleadosController.class.getName())
+                    .log(Level.SEVERE, "Error realizando bindings.", ex);
+
+            new Mensaje().showModal(
+                    Alert.AlertType.ERROR,
+                    "Error al realizar el bindeo",
+                    getStage(),
+                    "Ocurrió un error al realizar el bindeo."
+            );
         }
     }
 
@@ -205,6 +269,9 @@ public class EmpleadosController extends Controller implements Initializable {
 
     @FXML
     private void onBtnBuscar(ActionEvent event) {
+        if (!txtId.getText().isBlank()) {
+            cargarEmpleado(Long.valueOf(txtId.getText()));
+        }
     }
 
     @FXML
@@ -215,7 +282,15 @@ public class EmpleadosController extends Controller implements Initializable {
             if (!invalidos.isBlank()) {
                 new Mensaje().showModal(Alert.AlertType.WARNING, "Eliminar empleado", getStage(), "Favor consultar el empleado a eliminar");
             } else {
-                new Mensaje().showModal(Alert.AlertType.WARNING, "Eliminar empleado", getStage(), "Favor consultar el empleado a eliminar");
+                EmpleadoService empleadoService = new EmpleadoService();
+                Respuesta respuesta = empleadoService.eliminarEmpleado(this.empleado.getId());
+                if (respuesta.getEstado()) {
+                    cargarValoresDefecto();
+                    new Mensaje().showModal(Alert.AlertType.INFORMATION, "Eliminar empleado", getStage(), "El empleado se eliminó correctamente");
+                } else {
+                    new Mensaje().showModal(Alert.AlertType.ERROR, "Eliminar empleado", getStage(), respuesta.getMensaje());
+                }
+                
             }
 
         } catch (Exception ex) {
@@ -230,16 +305,30 @@ public class EmpleadosController extends Controller implements Initializable {
     private void onBtnGuardar(ActionEvent event) {
         try {
             String invalidos = validarRequeridos();
+            
             if (!invalidos.isBlank()) {
-                new Mensaje().showModal(Alert.AlertType.WARNING, "Guardar empleado", getStage(), invalidos);
+                new Mensaje().showModal(Alert.AlertType.WARNING, "Guardar Empleado",
+                        getStage(), invalidos);
             } else {
-
+                EmpleadoService empleadoService = new EmpleadoService();
+                Respuesta respuesta = empleadoService.guardarEmpleado(this.empleado);
+                if (respuesta.getEstado()) {
+                    this.empleado = (EmpleadoDto) respuesta.getResultado("Empleado");
+                    this.empleadoProperty.set(this.empleado);
+                    validarAdministrador();
+                    validarRequeridos();
+                } else {
+                    new Mensaje().showModal(Alert.AlertType.ERROR, "Guardar empleado", getStage(), respuesta.getMensaje());
+                }
+                
+                
+                new Mensaje().showModal(Alert.AlertType.INFORMATION, "Guardar Empleado",
+                        getStage(), "El empleado se guardó correctamente.");
             }
-
         } catch (Exception ex) {
-            Logger.getLogger(EmpleadosController.class.getName()).log(Level.SEVERE,
-                    "Error guardando el empleado.", ex);
-            new Mensaje().showModal(Alert.AlertType.ERROR, "Guardar empleado", getStage(),
+            Logger.getLogger(EmpleadosController.class.getName()).
+                    log(Level.SEVERE, "Error guardando el empleado.", ex);
+            new Mensaje().showModal(Alert.AlertType.ERROR, "Guardar Empleado", getStage(),
                     "Ocurrió un error guardando el empleado.");
         }
     }
@@ -254,14 +343,22 @@ public class EmpleadosController extends Controller implements Initializable {
 
     private void cargarEmpleado(Long id) {
         try {
-
+            EmpleadoService empleadoService = new EmpleadoService();
+            Respuesta respuesta = empleadoService.getEmpleado(id);
+            if (respuesta.getEstado()) {
+                this.empleado = (EmpleadoDto) respuesta.getResultado("Empleado");
+                this.empleadoProperty.set(this.empleado);
+                validarAdministrador();
+                validarRequeridos();
+            } else {
+                new Mensaje().showModal(Alert.AlertType.ERROR, "Buscar empleado", getStage(), respuesta.getMensaje());
+            }
         } catch (Exception ex) {
-            Logger.getLogger(EmpleadosController.class.getName()).log(Level.SEVERE,
-                    "Error cargando el empleado.", ex);
-            new Mensaje().showModal(Alert.AlertType.ERROR, "Cragar empleado", getStage(),
-                    "Ocurrió un error cargando el empleado.");
+            Logger.getLogger(EmpleadosController.class.getName())
+                    .log(Level.SEVERE, "Error cargando el empleado", ex);
+            new Mensaje().showModal(Alert.AlertType.ERROR, "Cargar Empleado", getStage(),
+                    "Ocurrió un error cargando el empleado");
         }
-
     }
 
 }
