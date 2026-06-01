@@ -20,6 +20,9 @@ public class TipoPlanillaDTO {
     private StringProperty cantidadPlanillasMes;
     private BooleanProperty activo;
     private ObservableList<EmpleadoDto> empleados;
+    private List<EmpleadoDto> empleadosEliminados;
+    private Boolean modificado;
+    private Long version;
 
     public TipoPlanillaDTO() {
         this.id = new SimpleStringProperty("");
@@ -27,7 +30,21 @@ public class TipoPlanillaDTO {
         this.descripcion = new SimpleStringProperty("");
         this.cantidadPlanillasMes = new SimpleStringProperty("");
         this.activo = new SimpleBooleanProperty(true);
+        this.modificado = false;
         this.empleados = FXCollections.observableArrayList();
+        this.empleadosEliminados = new ArrayList<>();
+    }
+    
+    public TipoPlanillaDTO(TipoPlanilla tipoPlanilla) {
+        
+        this();
+        this.id.set(tipoPlanilla.getTplaId().toString());
+        this.codigo.set(tipoPlanilla.getTplaCodigo());
+        this.activo.set(tipoPlanilla.getTplaEstado().equals("A"));
+        this.descripcion.set(tipoPlanilla.getTplaDescripcion());
+        this.cantidadPlanillasMes.set(tipoPlanilla.getTplaPlaxmes().toString());
+        this.version = tipoPlanilla.getTplaVersion();
+        
     }
 
     public Long getId() {
@@ -127,6 +144,32 @@ public class TipoPlanillaDTO {
         return activo;
     }
 
+    public Long getVersion() {
+        return version;
+    }
+
+    public void setVersion(Long version) {
+        this.version = version;
+    }
+
+    public List<EmpleadoDto> getEmpleadosEliminados() {
+        return empleadosEliminados;
+    }
+
+    public void setEmpleadosEliminados(List<EmpleadoDto> empleadosEliminados) {
+        this.empleadosEliminados = empleadosEliminados;
+    }
+
+    public Boolean getModificado() {
+        return modificado;
+    }
+
+    public void setModificado(Boolean modificado) {
+        this.modificado = modificado;
+    }
+    
+    
+    
     @Override
     public int hashCode() {
         return Objects.hashCode(this.id.get());

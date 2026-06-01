@@ -551,3 +551,12 @@
     -fx-text-fill: -fx-base-color-subtitulo;
     -fx-font-size: 15px;
 }
+
+.jfx-btnimg-tbveliminar{
+    -fx-opacity: 0.8;
+    -fx-background-repeat: no-repeat;
+    -fx-background-position: center;
+    -fx-background-size: contain;
+    -fx-background-color: #f44336;
+    -fx-background-image : url("../resource/Eliminar-48.png");
+}

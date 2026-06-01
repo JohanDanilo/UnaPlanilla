@@ -67,9 +67,6 @@ public class EmpleadoService {
             return new Respuesta(true, "", "", "Empleado", new EmpleadoDto(empleado));
             
         } catch (Exception ex) {
-//            if (et != null && et.isActive()) {  // <-- esto
-//                et.rollback();
-//            }
             et.rollback();
             Logger.getLogger(EmpleadoService.class.getName()).log(Level.SEVERE, "Error guardando el empleado", ex);
             return new Respuesta(false, "Error guardando el empleado.", "guardarEmpleado " + ex.getMessage());
@@ -96,12 +93,30 @@ public class EmpleadoService {
             return new Respuesta(true, "", "");
             
         } catch (Exception ex) {
-//            if (et != null && et.isActive()) {  // <-- esto
-//                et.rollback();
-//            }
             et.rollback();
             Logger.getLogger(EmpleadoService.class.getName()).log(Level.SEVERE, "Error eliminando el empleado", ex);
             return new Respuesta(false, "Error eliminando el empleado.", "guardarEmpleado " + ex.getMessage());
+        }
+    }
+    
+    public Respuesta login(String usuario, String clave) {
+        try {
+            TypedQuery<Empleado> qryLogin = em.createNamedQuery("Empleado.login", Empleado.class);
+            qryLogin.setParameter("usuario", usuario);
+            qryLogin.setParameter("clave", clave);
+            EmpleadoDto empleadoDto = new EmpleadoDto(qryLogin.getSingleResult());
+            return new Respuesta(true, "", "", "Empleado", empleadoDto);
+
+        } catch (NoResultException ex) {
+            return new Respuesta(false, "Usuario o clave incorrectos.", "login NoResultException");
+        } catch (NonUniqueResultException ex) {
+            Logger.getLogger(EmpleadoService.class.getName())
+                    .log(Level.SEVERE, "Múltiples resultados en login.", ex);
+            return new Respuesta(false, "Usuario o clave incorrectos.", "login NonUniqueResultException");
+        } catch (Exception ex) {
+            Logger.getLogger(EmpleadoService.class.getName())
+                    .log(Level.SEVERE, "Error en login.", ex);
+            return new Respuesta(false, "Error al intentar ingresar.", "login " + ex.getMessage());
         }
     }
     

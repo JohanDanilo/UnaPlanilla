@@ -37,7 +37,7 @@
                         <Insets left="10.0" />
                      </HBox.margin>
                   </ImageView>
-                  <MFXTextField floatingText="Usuario" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="49.0" prefWidth="450.0" HBox.hgrow="ALWAYS">
+                  <MFXTextField fx:id="txtUsuario" floatingText="Usuario" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" onKeyPressed="#onKeyPressedEnterUsuario" prefHeight="49.0" prefWidth="450.0" HBox.hgrow="ALWAYS">
                      <HBox.margin>
                         <Insets left="10.0" />
                      </HBox.margin>
@@ -60,7 +60,7 @@
                         <Insets left="10.0" />
                      </HBox.margin>
                   </ImageView>
-                  <MFXPasswordField floatingText="Clave" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="49.0" prefWidth="450.0" HBox.hgrow="ALWAYS">
+                  <MFXPasswordField fx:id="txtClave" floatingText="Clave" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" onKeyPressed="#onKeyPressedEnterClave" prefHeight="49.0" prefWidth="450.0" HBox.hgrow="ALWAYS">
                      <HBox.margin>
                         <Insets left="10.0" />
                      </HBox.margin>

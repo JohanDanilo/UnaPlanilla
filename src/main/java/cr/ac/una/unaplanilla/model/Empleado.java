@@ -25,7 +25,10 @@ import jakarta.persistence.Version;
 @Table(name = "PLAM_EMPLEADOS", schema = "una")
 @NamedQueries({
     @NamedQuery(name = "Empleado.findAll", query = "SELECT e FROM Empleado e"),
-    @NamedQuery(name = "Empleado.findById", query = "SELECT e FROM Empleado e WHERE e.id = :id")})
+    @NamedQuery(name = "Empleado.findById", query = "SELECT e FROM Empleado e WHERE e.id = :id"),
+    @NamedQuery(name = "Empleado.login", query = "SELECT e FROM Empleado e WHERE e.usuario = :usuario "
+                      + "AND e.clave = :clave AND e.estado = 'A'")
+})
 public class Empleado implements Serializable {
 
     private static final long serialVersionUID = 1L;

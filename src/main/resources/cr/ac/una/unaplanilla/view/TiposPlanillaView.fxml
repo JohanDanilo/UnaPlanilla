@@ -27,18 +27,18 @@
                            <children>
                               <HBox alignment="TOP_RIGHT" layoutX="9.333333015441895" layoutY="9.333333015441895" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                  <children>
-                                    <VBox prefWidth="400.0" spacing="10.0" HBox.hgrow="ALWAYS">
+                                    <VBox prefWidth="379.0" spacing="10.0" HBox.hgrow="ALWAYS">
                                        <children>
-                                          <MFXTextField fx:id="txtId" floatingText="Id" prefHeight="50.0" prefWidth="200.0" styleClass="custom-field" />
-                                          <MFXTextField fx:id="txtCodigo" floatingText="Código" layoutX="10.0" layoutY="20.0" prefHeight="50.0" prefWidth="200.0" styleClass="custom-field" />
-                                          <MFXTextField fx:id="txtDescripcion" floatingText="Descripción" layoutX="10.0" layoutY="80.0" prefHeight="50.0" prefWidth="200.0" styleClass="custom-field" />
-                                          <MFXTextField fx:id="txtCantidadPlanillasMes" floatingText="Planillas por mes" layoutX="10.0" layoutY="140.0" prefHeight="50.0" prefWidth="200.0" styleClass="custom-field" />
+                                          <MFXTextField fx:id="txtId" floatingText="Id" maxWidth="1.7976931348623157E308" onKeyPressed="#onKeyPressedId" prefHeight="50.0" prefWidth="200.0" styleClass="custom-field" />
+                                          <MFXTextField fx:id="txtCodigo" floatingText="Código" layoutX="10.0" layoutY="20.0" maxWidth="1.7976931348623157E308" prefHeight="50.0" prefWidth="200.0" styleClass="custom-field" />
+                                          <MFXTextField fx:id="txtDescripcion" floatingText="Descripción" layoutX="10.0" layoutY="80.0" maxWidth="1.7976931348623157E308" prefHeight="50.0" prefWidth="200.0" styleClass="custom-field" />
+                                          <MFXTextField fx:id="txtCantidadPlanillasMes" floatingText="Planillas por mes" layoutX="10.0" layoutY="140.0" maxWidth="1.7976931348623157E308" prefHeight="50.0" prefWidth="200.0" styleClass="custom-field" />
                                        </children>
                                        <padding>
                                           <Insets top="10.0" />
                                        </padding>
                                     </VBox>
-                                    <MFXCheckbox fx:id="chkActivo" styleClass="mfx-checkbox-seleccion" text="Activo">
+                                    <MFXCheckbox fx:id="chkActivo" prefWidth="143.0" styleClass="mfx-checkbox-seleccion" text="Activo">
                                        <HBox.margin>
                                           <Insets left="10.0" top="10.0" />
                                        </HBox.margin>
@@ -69,9 +69,9 @@
                                     </TableView>
                                     <HBox alignment="CENTER" prefHeight="60.0" prefWidth="200.0" spacing="5.0">
                                        <children>
-                                          <MFXTextField fx:id="txtIdEmpleado" floatingText="Id Empleado" maxHeight="1.7976931348623157E308" prefHeight="50.0" prefWidth="90.0" styleClass="custom-field-short" />
+                                          <MFXTextField fx:id="txtIdEmpleado" floatingText="Id Empleado" maxHeight="1.7976931348623157E308" onKeyPressed="#onKeyPressedIdEmpleado" prefHeight="50.0" prefWidth="90.0" styleClass="custom-field-short" />
                                           <MFXTextField fx:id="txtNombreEmpleado" floatingText="Nombre" layoutX="255.0" layoutY="15.0" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="50.0" prefWidth="90.0" styleClass="custom-field" HBox.hgrow="ALWAYS" />
-                                          <Button mnemonicParsing="false" prefHeight="50.0" prefWidth="50.0" styleClass="jfx-btn-principal" text="Button" />
+                                          <Button mnemonicParsing="false" onAction="#onBtnAgregarEmpleado" prefHeight="50.0" prefWidth="50.0" styleClass="jfx-btn-principal" text="Agregar" />
                                        </children>
                                     </HBox>
                                  </children>

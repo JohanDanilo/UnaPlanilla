@@ -25,6 +25,7 @@ public class EmpleadoDto {
     private ObjectProperty<LocalDate> fechaSalida;
     private BooleanProperty activo;
     private Long version;
+    private Boolean modificado;
 
     public EmpleadoDto() {
         this.id = new SimpleStringProperty("");
@@ -40,6 +41,7 @@ public class EmpleadoDto {
         this.fechaIngreso = new SimpleObjectProperty<>(LocalDate.now());
         this.fechaSalida = new SimpleObjectProperty<>();
         this.activo = new SimpleBooleanProperty(true);
+        this.modificado = false;
     }
 
     public EmpleadoDto(Empleado empleado) {
@@ -53,8 +55,6 @@ public class EmpleadoDto {
         this.cedula.set(empleado.getCedula());
         this.genero.set(empleado.getGenero());
         this.correo.set(empleado.getCorreo());
-        //this.usuario.set(empleado.getUsuario());
-        //this.clave.set(empleado.getClave());
         
         this.usuario.set(
             Objects.toString(empleado.getUsuario(), "")
@@ -248,9 +248,16 @@ public class EmpleadoDto {
     public void setVersion(Long version) {
         this.version = version;
     }
-    
-    
 
+    public Boolean getModificado() {
+        return modificado;
+    }
+
+    public void setModificado(Boolean modificado) {
+        this.modificado = modificado;
+    }
+    
+    
 
     @Override
     public int hashCode() {
