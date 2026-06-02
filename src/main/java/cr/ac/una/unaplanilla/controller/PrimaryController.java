@@ -53,7 +53,7 @@ public class PrimaryController extends Controller implements Initializable {
 
     @FXML
     private void onActionBtnCerrar(ActionEvent event){
-        
+        AppContext.getInstance().delete("empleado");
         FlowController.getInstance().limpiarLoader("LoginView");
         getStage().close();
         FlowController.getInstance().goViewInWindow("LoginView");

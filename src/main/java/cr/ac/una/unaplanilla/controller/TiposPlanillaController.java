@@ -74,6 +74,7 @@ public class TiposPlanillaController extends Controller implements Initializable
     private TipoPlanillaDTO tiposPlanillaDto;
 
     private ObservableList<EmpleadoDto> empleados;
+    
     @FXML
     private TitledPane panelTiposPlanillas;
     @FXML
@@ -422,6 +423,14 @@ public class TiposPlanillaController extends Controller implements Initializable
                 listaEmpleados.getItems().remove(emp);
                 listaEmpleados.refresh();
             });
+        }
+        
+        @Override
+        protected void updateItem(Boolean t, boolean empty) {
+            super.updateItem(t, empty);
+            if (!empty) {
+                setGraphic(cellButton);
+            }
         }
     }
 

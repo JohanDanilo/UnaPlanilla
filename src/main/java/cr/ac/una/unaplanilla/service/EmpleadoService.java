@@ -13,6 +13,8 @@ import jakarta.persistence.EntityTransaction;
 import jakarta.persistence.NoResultException;
 import jakarta.persistence.NonUniqueResultException;
 import jakarta.persistence.TypedQuery;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -117,6 +119,26 @@ public class EmpleadoService {
             Logger.getLogger(EmpleadoService.class.getName())
                     .log(Level.SEVERE, "Error en login.", ex);
             return new Respuesta(false, "Error al intentar ingresar.", "login " + ex.getMessage());
+        }
+    }
+    
+    public Respuesta buscarEmpleados(String cedula, String nombre, String primerApellido, String segundoApellido) {
+        try {
+            TypedQuery<Empleado> qry = em.createNamedQuery("Empleado.buscar", Empleado.class);
+            qry.setParameter("cedula", cedula != null && !cedula.isBlank() ? "%" + cedula + "%" : null);
+            qry.setParameter("nombre", nombre != null && !nombre.isBlank() ? "%" + nombre + "%" : null);
+            qry.setParameter("primerApellido", primerApellido != null && !primerApellido.isBlank() ? "%" + primerApellido + "%" : null);
+            qry.setParameter("segundoApellido", segundoApellido != null && !segundoApellido.isBlank() ? "%" + segundoApellido + "%" : null);
+
+            List<EmpleadoDto> resultado = new ArrayList<>();
+            for (Empleado empleado : qry.getResultList()) {
+                resultado.add(new EmpleadoDto(empleado));
+            }
+            return new Respuesta(true, "", "", "Empleados", resultado);
+
+        } catch (Exception ex) {
+            Logger.getLogger(EmpleadoService.class.getName()).log(Level.SEVERE, "Error buscando empleados.", ex);
+            return new Respuesta(false, "Error buscando empleados.", "buscarEmpleados " + ex.getMessage());
         }
     }
     

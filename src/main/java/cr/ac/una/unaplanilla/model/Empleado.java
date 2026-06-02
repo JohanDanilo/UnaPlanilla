@@ -27,7 +27,13 @@ import jakarta.persistence.Version;
     @NamedQuery(name = "Empleado.findAll", query = "SELECT e FROM Empleado e"),
     @NamedQuery(name = "Empleado.findById", query = "SELECT e FROM Empleado e WHERE e.id = :id"),
     @NamedQuery(name = "Empleado.login", query = "SELECT e FROM Empleado e WHERE e.usuario = :usuario "
-                      + "AND e.clave = :clave AND e.estado = 'A'")
+                      + "AND e.clave = :clave AND e.estado = 'A'"),
+    @NamedQuery(name = "Empleado.buscar",
+            query = "SELECT e FROM Empleado e "
+                  + "WHERE (:cedula IS NULL OR UPPER(e.cedula) LIKE UPPER(:cedula)) "
+                  + "AND (:nombre IS NULL OR UPPER(e.nombre) LIKE UPPER(:nombre)) "
+                  + "AND (:primerApellido IS NULL OR UPPER(e.primerApellido) LIKE UPPER(:primerApellido)) "
+                  + "AND (:segundoApellido IS NULL OR UPPER(e.segundoApellido) LIKE UPPER(:segundoApellido))")
 })
 public class Empleado implements Serializable {
 

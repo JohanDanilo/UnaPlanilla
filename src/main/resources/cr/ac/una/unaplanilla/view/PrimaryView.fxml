@@ -33,36 +33,33 @@
                </children>
             </StackPane>
 
-            <HBox alignment="CENTER_LEFT" maxWidth="1.7976931348623157E308" prefHeight="56.0" spacing="10.0">
+            <HBox alignment="CENTER_LEFT" maxWidth="1.7976931348623157E308" spacing="10.0">
                <children>
                   <ImageView fitHeight="40.0" fitWidth="36.0" pickOnBounds="true" preserveRatio="true">
                      <image>
                         <Image url="@../resource/Usuario-48.png" />
                      </image>
                   </ImageView>
-                  <Label fx:id="userLbl" alignment="CENTER" contentDisplay="CENTER" maxWidth="1.7976931348623157E308" prefHeight="38.0" text="Username" textAlignment="CENTER" />
+                  <Label fx:id="userLbl" contentDisplay="CENTER" maxWidth="1.7976931348623157E308" prefHeight="38.0" text="Username" HBox.hgrow="ALWAYS" />
                </children>
-               <padding>
-                  <Insets left="10.0" />
-               </padding>
             </HBox>
 
             <MFXButton maxWidth="1.7976931348623157E308" onAction="#onActionBtnEmpleados" text="Empleados">
-               <VBox.margin><Insets left="8.0" right="8.0" /></VBox.margin>
+               <VBox.margin><Insets /></VBox.margin>
             </MFXButton>
 
             <MFXButton maxWidth="1.7976931348623157E308" onAction="#onActionBtnTipoPlanilla" text="Tipo Planilla">
-               <VBox.margin><Insets left="8.0" right="8.0" /></VBox.margin>
+               <VBox.margin><Insets /></VBox.margin>
             </MFXButton>
 
             <Region VBox.vgrow="ALWAYS" />
 
             <MFXButton maxWidth="1.7976931348623157E308" onAction="#onActionBtnCerrar" text="Cerrar sesión">
-               <VBox.margin><Insets left="8.0" right="8.0" /></VBox.margin>
+               <VBox.margin><Insets /></VBox.margin>
             </MFXButton>
 
             <MFXButton maxWidth="1.7976931348623157E308" onAction="#onActionBtnSalir" text="Salir">
-               <VBox.margin><Insets bottom="10.0" left="8.0" right="8.0" /></VBox.margin>
+               <VBox.margin><Insets /></VBox.margin>
             </MFXButton>
          </children>
       </VBox>

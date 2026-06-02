@@ -53,6 +53,10 @@ public class LoginController extends Controller implements Initializable {
         
         txtUsuario.delegateSetTextFormatter(Formato.getInstance().letrasFormat(30));
         txtClave.delegateSetTextFormatter(Formato.getInstance().letrasFormat(30));
+        
+        txtUsuario.clear();
+        txtClave.clear();
+        txtUsuario.requestFocus();
     }    
 
     @FXML

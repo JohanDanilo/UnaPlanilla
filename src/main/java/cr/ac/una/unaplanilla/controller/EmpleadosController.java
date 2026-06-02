@@ -2,7 +2,9 @@ package cr.ac.una.unaplanilla.controller;
 
 import cr.ac.una.unaplanilla.model.EmpleadoDto;
 import cr.ac.una.unaplanilla.service.EmpleadoService;
+import cr.ac.una.unaplanilla.util.AppContext;
 import cr.ac.una.unaplanilla.util.BindingUtils;
+import cr.ac.una.unaplanilla.util.FlowController;
 import cr.ac.una.unaplanilla.util.Formato;
 import cr.ac.una.unaplanilla.util.Mensaje;
 import cr.ac.una.unaplanilla.util.Respuesta;
@@ -267,12 +269,26 @@ public class EmpleadosController extends Controller implements Initializable {
         }
     }
 
+//    @FXML
+//    private void onBtnBuscar(ActionEvent event) {
+//        if (!txtId.getText().isBlank()) {
+//            cargarEmpleado(Long.valueOf(txtId.getText()));
+//        }
+//    }
+    
     @FXML
-    private void onBtnBuscar(ActionEvent event) {
-        if (!txtId.getText().isBlank()) {
-            cargarEmpleado(Long.valueOf(txtId.getText()));
-        }
+private void onBtnBuscar(ActionEvent event) {
+    cargarValoresDefecto();
+    AppContext.getInstance().set("busquedaTipo", "Empleados");
+    FlowController.getInstance().limpiarLoader("BusquedaView");
+    FlowController.getInstance().goViewInWindowModal("BusquedaView", getStage(), true);
+    
+    Long id = (Long) AppContext.getInstance().get("busquedaId");
+    if (id != null) {
+        cargarEmpleado(id);
+        AppContext.getInstance().delete("busquedaId");
     }
+}
 
     @FXML
     private void onBtnEliminar(ActionEvent event) {

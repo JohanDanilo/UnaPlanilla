@@ -38,20 +38,6 @@
     -fx-font-size: 14px;
 }
 
-
-
-.button:hover{
-    
-    -fx-background-color:#ff6d00;
-    
-}
-
-.mfx-button:hover{
-    
-    -fx-background-color:#ff6d00;
-    
-}
-
 .mfx-checkbox {
     -fx-font-size: 14.0px;
     -fx-pref-height: 26px;
@@ -85,41 +71,6 @@
 
 .mfx-date-cell:selected {
   -fx-background-color: -fx-base-color-focus;
-}
-
-/*******************BOTONES*********/
-
-.jfx-btn-nuevo, .jfx-btn-nuevo:armed, .jfx-btn-nuevo:focused{
-    -fx-background-color:#2196f3;
-}
-
-.jfx-btn-nuevo > ImageView{
-    -fx-image: url(../resource/Agregar-48.png);
-}
-
-.jfx-btn-buscar, .jfx-btn-buscar:armed, .jfx-btn-buscar:focused{
-    -fx-background-color:#3091c2;
-}
-
-.jfx-btn-buscar > ImageView{
-    -fx-image: url(../resource/Buscar-48.png);
-}
-
-
-.jfx-btn-eliminar, .jfx-btn-eliminar:armed, .jfx-btn-eliminar:focused{
-    -fx-background-color:#ff0000;
-}
-
-.jfx-btn-eliminar > ImageView{
-    -fx-image: url(../resource/Eliminar-48.png);
-}
-
-.jfx-btn-guardar, .jfx-btn-guardar:armed, .jfx-btn-guardar:focused{
-    -fx-background-color:#00cc33;
-}
-
-.jfx-btn-guardar > ImageView{
-    -fx-image: url(../resource/Guardar-48.png);
 }
 
 /**********Paneles***************/
@@ -202,33 +153,6 @@
 
 /**********Boton normal***********/
 
-.mfx-button{
-    -fx-background-color: #666666;
-    -fx-text-fill: white;
-    -fx-font-size: 10px;
-    -fx-font-weight: bold;
-
-    -fx-padding: 3,3;
-
-    -fx-border-color: linear-gradient(to right, #7c3aed, #06b6d4);
-    -fx-border-width: 1.5;
-    -fx-effect: dropshadow(gaussian, rgba(6, 182, 212, 0.6), 10, 0.5, 0, 0);
-}
-
-.mfx-button:focused {
-    -fx-background-color: #666666;
-}
-.mfx-button:hover {
-    -fx-background-color: linear-gradient(to right, #06b6d4, #4f46e5);
-}
-.mfx-button:pressed {
-    -fx-background-color: linear-gradient(to right, #06b6d4, #4338ca);
-}
-
-.mfx-button:selected {
-    -fx-background-color: linear-gradient(to right, #06b6d4, #4338ca);
-}
-
 .button {
     -fx-background-color: #1a1a2e;
     -fx-text-fill: white;
@@ -250,13 +174,90 @@
     -fx-border-radius: 4px;
 }
 
-.button:disabled {
-    -fx-opacity: 0.4;
-}
-
 .toggle-button:selected {
     -fx-background-color: #e94560;
     -fx-text-fill: white;
+}
+
+/********** Clase universal boton material fx***********/
+
+.mfx-button{
+    -fx-background-color: #1a1a2e;
+    -fx-text-fill: white;
+    -fx-font-size: 12px;
+    -fx-font-weight: bold;
+    -fx-padding: 3 3;
+}
+
+.mfx-button:focused {
+    -fx-background-color: #1a1a2e;
+    -fx-border-color: linear-gradient(to right, #7c3aed, #06b6d4);
+    -fx-border-width: 1.5;
+    -fx-effect: dropshadow(gaussian, rgba(6, 182, 212, 0.6), 10, 0.5, 0, 0);
+}
+.mfx-button:hover {
+    -fx-background-color: #16213e;
+}
+.mfx-button:pressed {
+    -fx-background-color: linear-gradient(to right, #06b6d4, #4338ca);
+}
+
+.mfx-button:selected {
+    -fx-background-color: linear-gradient(to right, #06b6d4, #4338ca);
+}
+
+/*******************BOTONES*********/
+
+.jfx-btn-nuevo, .jfx-btn-nuevo:armed, .jfx-btn-nuevo:focused{
+    -fx-background-color:#1a1a2e;
+}
+
+.jfx-btn-nuevo > ImageView{
+    -fx-image: url(../resource/Agregar-48.png);
+}
+
+.jfx-btn-buscar, .jfx-btn-buscar:armed, .jfx-btn-buscar:focused{
+    -fx-background-color:#1a1a2e;
+}
+
+.jfx-btn-buscar > ImageView{
+    -fx-image: url(../resource/Buscar-48.png);
+}
+
+
+.jfx-btn-eliminar, .jfx-btn-eliminar:armed, .jfx-btn-eliminar:focused{
+    -fx-background-color:#1a1a2e;
+}
+
+.jfx-btn-eliminar > ImageView{
+    -fx-image: url(../resource/Eliminar-48.png);
+}
+
+.jfx-btn-guardar, .jfx-btn-guardar:armed, .jfx-btn-guardar:focused{
+    -fx-background-color:#1a1a2e;
+}
+
+.jfx-btn-guardar > ImageView{
+    -fx-image: url(../resource/Guardar-48.png);
+}
+
+.jfx-btn-nuevo, .jfx-btn-buscar, .jfx-btn-eliminar, .jfx-btn-guardar:focused {
+    -fx-background-color: #1a1a2e;
+    -fx-border-color: linear-gradient(to right, #7c3aed, #06b6d4);
+    -fx-border-width: 1.5;
+    -fx-effect: dropshadow(gaussian, rgba(6, 182, 212, 0.6), 10, 0.5, 0, 0);
+}
+
+.jfx-btn-nuevo, .jfx-btn-buscar, .jfx-btn-eliminar, .jfx-btn-guardar:hover {
+    -fx-background-color: #16213e;
+}
+
+.jfx-btn-nuevo, .jfx-btn-buscar, .jfx-btn-eliminar, .jfx-btn-guardar:pressed{
+    -fx-background-color: linear-gradient(to right, #06b6d4, #4338ca);
+}
+
+.jfx-btn-nuevo, .jfx-btn-buscar, .jfx-btn-eliminar, .jfx-btn-guardar:selected{
+    -fx-background-color: linear-gradient(to right, #06b6d4, #4338ca);
 }
 
 /******************TextField******************/
@@ -559,4 +560,10 @@
     -fx-background-size: contain;
     -fx-background-color: #f44336;
     -fx-background-image : url("../resource/Eliminar-48.png");
+    -fx-pref-width: 27px;
+    /*-fx-pref-height: 40px;*/
+}
+
+.jfx-root{
+    -fx-background-color: radial-gradient(center 50% 50%, radius 100%, #0b0f2a, #020617);
 }
