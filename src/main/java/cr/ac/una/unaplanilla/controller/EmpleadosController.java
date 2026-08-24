@@ -2,12 +2,12 @@ package cr.ac.una.unaplanilla.controller;
 
 import cr.ac.una.unaplanilla.model.EmpleadoDto;
 import cr.ac.una.unaplanilla.service.EmpleadoService;
-import cr.ac.una.unaplanilla.util.AppContext;
 import cr.ac.una.unaplanilla.util.BindingUtils;
 import cr.ac.una.unaplanilla.util.FlowController;
 import cr.ac.una.unaplanilla.util.Formato;
 import cr.ac.una.unaplanilla.util.Mensaje;
 import cr.ac.una.unaplanilla.util.Respuesta;
+import io.github.palexdev.materialfx.controls.MFXButton;
 import io.github.palexdev.materialfx.controls.MFXCheckbox;
 import io.github.palexdev.materialfx.controls.MFXComboBox;
 import io.github.palexdev.materialfx.controls.MFXDatePicker;
@@ -34,11 +34,13 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.AnchorPane;
 
+/**
+ * FXML Controller class
+ *
+ * @author cbcar
+ */
 public class EmpleadosController extends Controller implements Initializable {
 
-    private EmpleadoDto empleado;
-    private ObjectProperty<EmpleadoDto> empleadoProperty = new SimpleObjectProperty<>();
-    private List<Node> requeridos = new ArrayList();
     @FXML
     private AnchorPane root;
     @FXML
@@ -46,23 +48,25 @@ public class EmpleadosController extends Controller implements Initializable {
     @FXML
     private MFXTextField txtNombre;
     @FXML
-    private MFXTextField txtApellido;
+    private MFXTextField txtPApellido;
     @FXML
-    private MFXTextField txtSegundoApellido;
+    private MFXTextField txtSApellido;
     @FXML
     private MFXTextField txtCedula;
     @FXML
     private MFXRadioButton rdbMasculino;
     @FXML
+    private ToggleGroup tggGenero;
+    @FXML
     private MFXRadioButton rdbFemenino;
     @FXML
-    private MFXCheckbox cbxAdministrador;
+    private MFXCheckbox chkAdministrador;
     @FXML
-    private MFXCheckbox cbxActivo;
+    private MFXCheckbox chkActivo;
     @FXML
-    private MFXDatePicker dprFechaIngreso;
+    private MFXDatePicker dtpFIngreso;
     @FXML
-    private MFXDatePicker dprFechaSalida;
+    private MFXDatePicker dtpFSalida;
     @FXML
     private MFXTextField txtCorreo;
     @FXML
@@ -70,150 +74,103 @@ public class EmpleadosController extends Controller implements Initializable {
     @FXML
     private MFXPasswordField txtClave;
     @FXML
-    private ToggleGroup tggGenero;
+    private MFXButton btnNuevo;
+    @FXML
+    private MFXButton btnBuscar;
+    @FXML
+    private MFXButton btnEliminar;
+    @FXML
+    private MFXButton btnGuardar;
 
+    private EmpleadoDto empleadoDto;
+    private ObjectProperty<EmpleadoDto> empleadoProperty = new SimpleObjectProperty<>();
+    private List<Node> requeridos = new ArrayList();
+
+    /**
+     * Initializes the controller class.
+     */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        rdbFemenino.setUserData("F");
         rdbMasculino.setUserData("M");
+        rdbFemenino.setUserData("F");
         txtId.delegateSetTextFormatter(Formato.getInstance().integerFormat());
         txtNombre.delegateSetTextFormatter(Formato.getInstance().letrasFormat(30));
-        txtApellido.delegateSetTextFormatter(Formato.getInstance().letrasFormat(15));
-        txtSegundoApellido.delegateSetTextFormatter(Formato.getInstance().letrasFormat(15));
+        txtPApellido.delegateSetTextFormatter(Formato.getInstance().letrasFormat(15));
+        txtSApellido.delegateSetTextFormatter(Formato.getInstance().letrasFormat(15));
         txtCedula.delegateSetTextFormatter(Formato.getInstance().cedulaFormat(40));
         txtCorreo.delegateSetTextFormatter(Formato.getInstance().maxLengthFormat(80));
-        txtClave.delegateSetTextFormatter(Formato.getInstance().letrasFormat(8));
-        txtUsuario.delegateSetTextFormatter(Formato.getInstance().letrasFormat(30));
-        this.empleado = new EmpleadoDto();
+        txtUsuario.delegateSetTextFormatter(Formato.getInstance().letrasFormat(15));
+        txtClave.delegateSetTextFormatter(Formato.getInstance().maxLengthFormat(8));
+        empleadoDto = new EmpleadoDto();
         bindEmpleado();
-        indicarRequeridos();
         cargarValoresDefecto();
-
+        indicarRequeridos();
     }
 
     @Override
     public void initialize() {
-    }
 
-    private void bindEmpleado() {
-        try {
-            empleadoProperty.addListener((ov, oldVal, newVal) -> {
-
-                if (oldVal != null) {
-
-                    txtId.textProperty().unbind();
-
-                    txtNombre.textProperty().unbindBidirectional(oldVal.getNombreProperty());
-                    txtApellido.textProperty().unbindBidirectional(oldVal.getPrimerApellidoProperty());
-                    txtSegundoApellido.textProperty().unbindBidirectional(oldVal.getSegundoApellidoProperty());
-
-                    txtCedula.textProperty().unbindBidirectional(oldVal.getCedulaProperty());
-
-                    txtCorreo.textProperty().unbindBidirectional(oldVal.getCorreoProperty());
-
-                    txtUsuario.textProperty().unbindBidirectional(oldVal.getUsuarioProperty());
-
-                    txtClave.textProperty().unbindBidirectional(oldVal.getClaveProperty());
-
-                    dprFechaIngreso.valueProperty().unbindBidirectional(oldVal.getFechaIngresoProperty());
-
-                    dprFechaSalida.valueProperty().unbindBidirectional(oldVal.getFechaSalidaProperty());
-
-                    cbxAdministrador.selectedProperty().unbindBidirectional(oldVal.getAdministradorProperty());
-
-                    cbxActivo.selectedProperty().unbindBidirectional(oldVal.getActivoProperty());
-
-                    BindingUtils.unbindToggleGroupToProperty(
-                            tggGenero,
-                            oldVal.getGeneroProperty()
-                    );
-                }
-
-                if (newVal != null) {
-
-                    if (newVal.getIdProperty().get() != null && !newVal.getIdProperty().get().isBlank()) {
-                        txtId.textProperty().bind(newVal.getIdProperty());
-                    }
-
-                    txtNombre.textProperty().bindBidirectional(newVal.getNombreProperty());
-
-                    txtApellido.textProperty().bindBidirectional(newVal.getPrimerApellidoProperty());
-
-                    txtSegundoApellido.textProperty().bindBidirectional(newVal.getSegundoApellidoProperty());
-
-                    txtCedula.textProperty().bindBidirectional(newVal.getCedulaProperty());
-
-                    txtCorreo.textProperty().bindBidirectional(newVal.getCorreoProperty());
-
-                    txtUsuario.textProperty().bindBidirectional(newVal.getUsuarioProperty());
-
-                    txtClave.textProperty().bindBidirectional(newVal.getClaveProperty());
-
-                    dprFechaIngreso.valueProperty().bindBidirectional(
-                            newVal.getFechaIngresoProperty()
-                    );
-
-                    dprFechaSalida.valueProperty().bindBidirectional(
-                            newVal.getFechaSalidaProperty()
-                    );
-
-                    cbxAdministrador.selectedProperty().bindBidirectional(
-                            newVal.getAdministradorProperty()
-                    );
-
-                    cbxActivo.selectedProperty().bindBidirectional(
-                            newVal.getActivoProperty()
-                    );
-
-                    BindingUtils.bindToggleGroupToProperty(
-                            tggGenero,
-                            newVal.getGeneroProperty()
-                    );
-                }
-            });
-
-        } catch (Exception ex) {
-            Logger.getLogger(EmpleadosController.class.getName())
-                    .log(Level.SEVERE, "Error realizando bindings.", ex);
-
-            new Mensaje().showModal(
-                    Alert.AlertType.ERROR,
-                    "Error al realizar el bindeo",
-                    getStage(),
-                    "Ocurrió un error al realizar el bindeo."
-            );
-        }
     }
 
     private void cargarValoresDefecto() {
-        this.empleado = new EmpleadoDto();
-        this.empleado.setActivo(Boolean.TRUE);
-        this.empleado.setAdministrador(Boolean.FALSE);
-        this.empleado.setFechaIngreso(LocalDate.now());
-        this.empleado.setGenero("M");
-        this.empleadoProperty.set(this.empleado);
+        empleadoDto = new EmpleadoDto();
+        empleadoDto.setActivo(Boolean.TRUE);
+        empleadoDto.setAdministrador(Boolean.FALSE);
+        empleadoDto.setFechaIngreso(LocalDate.now());
+        empleadoDto.setGenero("M");
+        empleadoProperty.setValue(empleadoDto);
         validarAdministrador();
         txtId.clear();
         txtId.requestFocus();
     }
 
-    private void validarAdministrador() {
-        if (cbxAdministrador.isSelected()) {
-            requeridos.addAll(Arrays.asList(txtUsuario, txtClave));
-            txtUsuario.setDisable(false);
-            txtClave.setDisable(false);
-        } else {
-            requeridos.removeAll(Arrays.asList(txtUsuario, txtClave));
-            txtUsuario.clear();
-            txtUsuario.setDisable(true);
-            txtClave.clear();
-            txtClave.setDisable(true);
+    private void bindEmpleado() {
+        try {
+            empleadoProperty.addListener((obs, oldVal, newVal) -> {
+                if (oldVal != null) {
+                    txtId.textProperty().unbind();
+                    txtNombre.textProperty().unbindBidirectional(oldVal.getNombreProperty());
+                    txtPApellido.textProperty().unbindBidirectional(oldVal.getPrimerApellidoProperty());
+                    txtSApellido.textProperty().unbindBidirectional(oldVal.getSegundoApellidoProperty());
+                    txtCedula.textProperty().unbindBidirectional(oldVal.getCedulaProperty());
+                    chkAdministrador.selectedProperty().unbindBidirectional(oldVal.getAdministradorProperty());
+                    txtCorreo.textProperty().unbindBidirectional(oldVal.getCorreoProperty());
+                    txtUsuario.textProperty().unbindBidirectional(oldVal.getUsuarioProperty());
+                    txtClave.textProperty().unbindBidirectional(oldVal.getClaveProperty());
+                    dtpFIngreso.valueProperty().unbindBidirectional(oldVal.getFechaIngresoProperty());
+                    dtpFSalida.valueProperty().unbindBidirectional(oldVal.getFechaSalidaProperty());
+                    chkActivo.selectedProperty().unbindBidirectional(oldVal.getActivoProperty());
+                    BindingUtils.unbindToggleGroupToProperty(tggGenero, oldVal.getGeneroProperty());
+                }
+                if (newVal != null) {
+                    if (newVal.getIdProperty().get() != null
+                            && !newVal.getIdProperty().get().isBlank()) {
+                        txtId.textProperty().bind(newVal.getIdProperty());
+                    }
+                    txtNombre.textProperty().bindBidirectional(newVal.getNombreProperty());
+                    txtPApellido.textProperty().bindBidirectional(newVal.getPrimerApellidoProperty());
+                    txtSApellido.textProperty().bindBidirectional(newVal.getSegundoApellidoProperty());
+                    txtCedula.textProperty().bindBidirectional(newVal.getCedulaProperty());
+                    chkAdministrador.selectedProperty().bindBidirectional(newVal.getAdministradorProperty());
+                    txtCorreo.textProperty().bindBidirectional(newVal.getCorreoProperty());
+                    txtUsuario.textProperty().bindBidirectional(newVal.getUsuarioProperty());
+                    txtClave.textProperty().bindBidirectional(newVal.getClaveProperty());
+                    dtpFIngreso.valueProperty().bindBidirectional(newVal.getFechaIngresoProperty());
+                    dtpFSalida.valueProperty().bindBidirectional(newVal.getFechaSalidaProperty());
+                    chkActivo.selectedProperty().bindBidirectional(newVal.getActivoProperty());
+                    BindingUtils.bindToggleGroupToProperty(tggGenero, newVal.getGeneroProperty());
+                }
+            });
+
+        } catch (Exception ex) {
+            new Mensaje().showModal(Alert.AlertType.ERROR, "Error al realizar el bindeo", getStage(),
+                    "Ocurrió un error al realizar el bindeo.");
         }
     }
 
     private void indicarRequeridos() {
         requeridos.clear();
-        requeridos.addAll(Arrays.asList(txtCedula, txtNombre, txtApellido, dprFechaIngreso));
+        requeridos.addAll(Arrays.asList(txtNombre, txtCedula, txtPApellido, dtpFIngreso));
     }
 
     public String validarRequeridos() {
@@ -257,102 +214,23 @@ public class EmpleadosController extends Controller implements Initializable {
         }
     }
 
-    @FXML
-    private void onCbxAdministrador(ActionEvent event) {
-        validarAdministrador();
-    }
-
-    @FXML
-    private void onBtnNuevo(ActionEvent event) {
-        if (new Mensaje().showConfirmation("Limpiar Empleado", getStage(), "¿Está seguro que desea limpiar el registro?")) {
-            cargarValoresDefecto();
-        }
-    }
-
-//    @FXML
-//    private void onBtnBuscar(ActionEvent event) {
-//        if (!txtId.getText().isBlank()) {
-//            cargarEmpleado(Long.valueOf(txtId.getText()));
-//        }
-//    }
-    
-    @FXML
-private void onBtnBuscar(ActionEvent event) {
-    cargarValoresDefecto();
-    AppContext.getInstance().set("busquedaTipo", "Empleados");
-    FlowController.getInstance().limpiarLoader("BusquedaView");
-    FlowController.getInstance().goViewInWindowModal("BusquedaView", getStage(), true);
-    
-    Long id = (Long) AppContext.getInstance().get("busquedaId");
-    if (id != null) {
-        cargarEmpleado(id);
-        AppContext.getInstance().delete("busquedaId");
-    }
-}
-
-    @FXML
-    private void onBtnEliminar(ActionEvent event) {
-
-        try {
-            String invalidos = validarRequeridos();
-            if (!invalidos.isBlank()) {
-                new Mensaje().showModal(Alert.AlertType.WARNING, "Eliminar empleado", getStage(), "Favor consultar el empleado a eliminar");
-            } else {
-                EmpleadoService empleadoService = new EmpleadoService();
-                Respuesta respuesta = empleadoService.eliminarEmpleado(this.empleado.getId());
-                if (respuesta.getEstado()) {
-                    cargarValoresDefecto();
-                    new Mensaje().showModal(Alert.AlertType.INFORMATION, "Eliminar empleado", getStage(), "El empleado se eliminó correctamente");
-                } else {
-                    new Mensaje().showModal(Alert.AlertType.ERROR, "Eliminar empleado", getStage(), respuesta.getMensaje());
-                }
-                
-            }
-
-        } catch (Exception ex) {
-            Logger.getLogger(EmpleadosController.class.getName()).log(Level.SEVERE,
-                    "Error eliminando el empleado.", ex);
-            new Mensaje().showModal(Alert.AlertType.ERROR, "Eliminar empleado", getStage(),
-                    "Ocurrió un error eliminando el empleado.");
-        }
-    }
-
-    @FXML
-    private void onBtnGuardar(ActionEvent event) {
-        try {
-            String invalidos = validarRequeridos();
-            
-            if (!invalidos.isBlank()) {
-                new Mensaje().showModal(Alert.AlertType.WARNING, "Guardar Empleado",
-                        getStage(), invalidos);
-            } else {
-                EmpleadoService empleadoService = new EmpleadoService();
-                Respuesta respuesta = empleadoService.guardarEmpleado(this.empleado);
-                if (respuesta.getEstado()) {
-                    this.empleado = (EmpleadoDto) respuesta.getResultado("Empleado");
-                    this.empleadoProperty.set(this.empleado);
-                    validarAdministrador();
-                    validarRequeridos();
-                } else {
-                    new Mensaje().showModal(Alert.AlertType.ERROR, "Guardar empleado", getStage(), respuesta.getMensaje());
-                }
-                
-                
-                new Mensaje().showModal(Alert.AlertType.INFORMATION, "Guardar Empleado",
-                        getStage(), "El empleado se guardó correctamente.");
-            }
-        } catch (Exception ex) {
-            Logger.getLogger(EmpleadosController.class.getName()).
-                    log(Level.SEVERE, "Error guardando el empleado.", ex);
-            new Mensaje().showModal(Alert.AlertType.ERROR, "Guardar Empleado", getStage(),
-                    "Ocurrió un error guardando el empleado.");
+    private void validarAdministrador() {
+        if (chkAdministrador.isSelected()) {
+            requeridos.addAll(Arrays.asList(txtUsuario, txtClave));
+            txtUsuario.setDisable(false);
+            txtClave.setDisable(false);
+        } else {
+            requeridos.removeAll(Arrays.asList(txtUsuario, txtClave));
+            txtUsuario.clear();
+            txtUsuario.setDisable(true);
+            txtClave.clear();
+            txtClave.setDisable(true);
         }
     }
 
     @FXML
     private void onKeyPressedTxtId(KeyEvent event) {
-        if (event.getCode() == KeyCode.ENTER
-                && !txtId.getText().isBlank()) {
+        if (event.getCode() == KeyCode.ENTER && !txtId.getText().isBlank()) {
             cargarEmpleado(Long.valueOf(txtId.getText()));
         }
     }
@@ -362,18 +240,85 @@ private void onBtnBuscar(ActionEvent event) {
             EmpleadoService empleadoService = new EmpleadoService();
             Respuesta respuesta = empleadoService.getEmpleado(id);
             if (respuesta.getEstado()) {
-                this.empleado = (EmpleadoDto) respuesta.getResultado("Empleado");
-                this.empleadoProperty.set(this.empleado);
+                this.empleadoDto = (EmpleadoDto) respuesta.getResultado("Empleado");
+                this.empleadoProperty.setValue(this.empleadoDto);
                 validarAdministrador();
                 validarRequeridos();
             } else {
-                new Mensaje().showModal(Alert.AlertType.ERROR, "Buscar empleado", getStage(), respuesta.getMensaje());
+                new Mensaje().showModal(Alert.AlertType.ERROR, "Buscar Empleado", getStage(), respuesta.getMensaje());
             }
         } catch (Exception ex) {
-            Logger.getLogger(EmpleadosController.class.getName())
-                    .log(Level.SEVERE, "Error cargando el empleado", ex);
-            new Mensaje().showModal(Alert.AlertType.ERROR, "Cargar Empleado", getStage(),
-                    "Ocurrió un error cargando el empleado");
+            Logger.getLogger(EmpleadosController.class.getName()).log(Level.SEVERE, "Error buscando el empleado.", ex);
+            new Mensaje().showModal(Alert.AlertType.ERROR, "Buscar Empleado", getStage(), "Ocurrió un error buscando el empleado.");
+        }
+    }
+
+    @FXML
+    private void onActionChkAdministrador(ActionEvent event) {
+        validarAdministrador();
+    }
+
+    @FXML
+    private void onActionBtnNuevo(ActionEvent event) {
+        if (new Mensaje().showConfirmation("Limpiar Empleado", getStage(), "¿Esta seguro que desea limpiar el registro?")) {
+            cargarValoresDefecto();
+        }
+    }
+
+    @FXML
+    private void onActionBtnBuscar(ActionEvent event) {
+        BusquedaController busquedaController = (BusquedaController) FlowController.getInstance().getController("BusquedaView");
+        busquedaController.busquedaEmpleados();
+        FlowController.getInstance().goViewInWindowModal("BusquedaView", getStage(), true);
+        EmpleadoDto emp = (EmpleadoDto) busquedaController.getResultado();
+        if (emp != null) {
+            cargarEmpleado(emp.getId());
+        }
+    }
+
+    @FXML
+    private void onActionBtnEliminar(ActionEvent event) {
+        try {
+            if (this.empleadoDto.getId() == null) {
+                new Mensaje().showModal(Alert.AlertType.ERROR, "Guardar Empleado", getStage(), "Favor consultar el empleado a eliminar.");
+            } else {
+                EmpleadoService empleadoService = new EmpleadoService();
+                Respuesta respuesta = empleadoService.eliminarEmpleado(this.empleadoDto.getId());
+                if (respuesta.getEstado()) {
+                    cargarValoresDefecto();
+                    new Mensaje().showModal(Alert.AlertType.INFORMATION, "Eliminar Empleado", getStage(), "El empleado se eliminó correctamente.");
+                } else {
+                    new Mensaje().showModal(Alert.AlertType.ERROR, "Eliminar Empleado", getStage(), respuesta.getMensaje());
+                }
+            }
+        } catch (Exception ex) {
+            Logger.getLogger(EmpleadosController.class.getName()).log(Level.SEVERE, "Error eliminando el empleado.", ex);
+            new Mensaje().showModal(Alert.AlertType.ERROR, "Eliminar Empleado", getStage(), "Ocurrió un error eliminando el empleado.");
+        }
+    }
+
+    @FXML
+    private void onActionBtnGuardar(ActionEvent event) {
+        try {
+            String invalidos = validarRequeridos();
+            if (!invalidos.isEmpty()) {
+                new Mensaje().showModal(Alert.AlertType.ERROR, "Guardar empleado", getStage(), invalidos);
+            } else {
+                EmpleadoService empleadoService = new EmpleadoService();
+                Respuesta respuesta = empleadoService.guardarEmpleado(empleadoDto);
+                if (!respuesta.getEstado()) {
+                    new Mensaje().showModal(Alert.AlertType.ERROR, "Guardar empleado", getStage(), respuesta.getMensaje());
+                } else {
+                    this.empleadoDto = (EmpleadoDto)respuesta.getResultado("Empleado");
+                    this.empleadoProperty.set(this.empleadoDto);
+                    validarAdministrador();
+                    validarRequeridos();
+                    new Mensaje().showModal(Alert.AlertType.INFORMATION, "Guardar Empleado", getStage(), "El empleado se guardó correctamente.");
+                }
+            }
+        } catch (Exception ex) {
+            Logger.getLogger(EmpleadosController.class.getName()).log(Level.SEVERE, "Error guardando el empleado.", ex);
+            new Mensaje().showModal(Alert.AlertType.ERROR, "Guardar Empleado", getStage(), "Ocurrio un error guardando el empleado.");
         }
     }
 

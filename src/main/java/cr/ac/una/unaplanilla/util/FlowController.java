@@ -1,3 +1,8 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
 package cr.ac.una.unaplanilla.util;
 
 import cr.ac.una.unaplanilla.App;
@@ -18,7 +23,6 @@ import javafx.stage.WindowEvent;
 import cr.ac.una.unaplanilla.controller.Controller;
 import io.github.palexdev.materialfx.css.themes.MFXThemeManager;
 import io.github.palexdev.materialfx.css.themes.Themes;
-import javafx.scene.layout.HBox;
 
 public class FlowController {
 
@@ -26,6 +30,7 @@ public class FlowController {
     private static Stage mainStage;
     private static ResourceBundle idioma;
     private static HashMap<String, FXMLLoader> loaders = new HashMap<>();
+    private static Controller logInController;
 
     private FlowController() {
     }
@@ -64,8 +69,7 @@ public class FlowController {
             synchronized (FlowController.class) {
                 if (loader == null) {
                     try {
-                        // CORRECCIÓN: Ruta absoluta desde la raíz de resources
-                        loader = new FXMLLoader(App.class.getResource("/cr/ac/una/unaplanilla/view/" + name + ".fxml"), this.idioma);
+                        loader = new FXMLLoader(App.class.getResource("view/" + name + ".fxml"), this.idioma);
                         loader.load();
                         loaders.put(name, loader);
                     } catch (Exception ex) {
@@ -75,30 +79,21 @@ public class FlowController {
                 }
             }
         }
+        if(!name.equals("LogInView")){
+            this.logInController = loader.getController();
+        }
         return loader;
     }
 
     public void goMain() {
-    try {
-        FXMLLoader loader = new FXMLLoader(
-            App.class.getResource("/cr/ac/una/unaplanilla/view/PrimaryView.fxml"), 
-            this.idioma
-        );
-        Parent root = loader.load();
-        
-        Controller controller = loader.getController();
-        controller.setStage(this.mainStage); // ← esta es la línea clave
-        controller.initialize();
-        
-        this.mainStage.setScene(new Scene(root));
-        applyIcon(this.mainStage);
-        MFXThemeManager.addOn(this.mainStage.getScene(), Themes.DEFAULT, Themes.LEGACY);
-        this.mainStage.show();
-    } catch (IOException ex) {
-        java.util.logging.Logger.getLogger(FlowController.class.getName())
-            .log(Level.SEVERE, "Error inicializando la vista base.", ex);
+        try {
+            this.mainStage.setScene(new Scene(FXMLLoader.load(App.class.getResource("view/PrincipalView.fxml"), this.idioma)));
+            MFXThemeManager.addOn(this.mainStage.getScene(), Themes.DEFAULT, Themes.LEGACY);
+            this.mainStage.show();
+        } catch (IOException ex) {
+            java.util.logging.Logger.getLogger(FlowController.class.getName()).log(Level.SEVERE, "Error inicializando la vista base.", ex);
+        }
     }
-}
 
     public void goView(String viewName) {
         goView(viewName, "Center", null);
@@ -111,6 +106,7 @@ public class FlowController {
     public void goView(String viewName, String location, String accion) {
         FXMLLoader loader = getLoader(viewName);
         Controller controller = loader.getController();
+        controller.setAccion(accion);
         controller.initialize();
         Stage stage = controller.getStage();
         if (stage == null) {
@@ -119,18 +115,18 @@ public class FlowController {
         }
         switch (location) {
             case "Center":
-                BorderPane borderPane = (BorderPane) stage.getScene().getRoot();
-                VBox vBox = (VBox)borderPane.getCenter();
+                VBox vBox = ((VBox) ((BorderPane) stage.getScene().getRoot()).getCenter());
                 vBox.getChildren().clear();
                 vBox.getChildren().add(loader.getRoot());
-                MFXThemeManager.addOn(stage.getScene(), Themes.DEFAULT, Themes.LEGACY);
+                DragResizeMod.makeResizable(loader.getRoot());
                 break;
             case "Top":
-                BorderPane borderPane2 = (BorderPane) stage.getScene().getRoot();
-                HBox hBox = (HBox)borderPane2.getTop();
-                hBox.getChildren().clear();
-                hBox.getChildren().add(loader.getRoot());
-                MFXThemeManager.addOn(stage.getScene(), Themes.DEFAULT, Themes.LEGACY);
+                break;
+            case "Bottom":
+                break;
+            case "Right":
+                break;
+            case "Left":
                 break;
             default:
                 break;
@@ -143,6 +139,7 @@ public class FlowController {
         controller.setStage(stage);
         stage.getScene().setRoot(loader.getRoot());
         MFXThemeManager.addOn(stage.getScene(), Themes.DEFAULT, Themes.LEGACY);
+        
     }
 
     public void goViewInWindow(String viewName) {
@@ -150,7 +147,7 @@ public class FlowController {
         Controller controller = loader.getController();
         controller.initialize();
         Stage stage = new Stage();
-        stage.getIcons().add(new Image(App.class.getResourceAsStream("/cr/ac/una/unaplanilla/resource/LogoUNArojo.png")));
+        stage.getIcons().add(new Image(App.class.getResourceAsStream("/cr/ac/una/unaplanilla/resources/LogoUNArojo.png")));
         stage.setTitle(controller.getNombreVista());
         stage.setOnHidden((WindowEvent event) -> {
             controller.getStage().getScene().setRoot(new Pane());
@@ -164,13 +161,18 @@ public class FlowController {
         stage.centerOnScreen();
         stage.show();
     }
+    
+    public void goLogInWindowModal(Boolean resizable) {
+        goViewInWindowModal("LogInView", this.logInController.getStage(), resizable);
+        
+    }
 
     public void goViewInWindowModal(String viewName, Stage parentStage, Boolean resizable) {
         FXMLLoader loader = getLoader(viewName);
         Controller controller = loader.getController();
         controller.initialize();
         Stage stage = new Stage();
-        stage.getIcons().add(new Image(App.class.getResourceAsStream("/cr/ac/una/unaplanilla/resource/LogoUNArojo.png")));
+        stage.getIcons().add(new Image(App.class.getResourceAsStream("/cr/ac/una/unaplanilla/resources/LogoUNArojo.png")));
         stage.setTitle(controller.getNombreVista());
         stage.setResizable(resizable);
         stage.setOnHidden((WindowEvent event) -> {
@@ -186,18 +188,11 @@ public class FlowController {
         stage.initOwner(parentStage);
         stage.centerOnScreen();
         stage.showAndWait();
+
     }
 
     public Controller getController(String viewName) {
         return getLoader(viewName).getController();
-    }
-
-    // FlowController.java - en el método que configura cada Stage
-    private void applyIcon(Stage stage) {
-        stage.getIcons().clear();
-        stage.getIcons().add(new Image(
-                App.class.getResourceAsStream("/cr/ac/una/unaplanilla/resource/LogoUNArojo.png")
-        ));
     }
     
     public void limpiarLoader(String view){
@@ -215,4 +210,5 @@ public class FlowController {
     public void salir() {
         this.mainStage.close();
     }
+
 }

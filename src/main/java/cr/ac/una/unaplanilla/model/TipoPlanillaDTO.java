@@ -10,45 +10,38 @@ import javafx.beans.property.StringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
-public class TipoPlanillaDTO {
+/**
+ *
+ * @author cbcar
+ */
+public class TipoPlanillaDto {
 
-    private StringProperty planillasXMes;
-    
     private StringProperty id;
     private StringProperty codigo;
     private StringProperty descripcion;
-    private StringProperty cantidadPlanillasMes;
+    private StringProperty planillaPorMes;
+    private Integer anoUltimaPlanilla;
+    private Integer mesUltimaPlanilla;
+    private Integer numeroUltimaPlanilla;
     private BooleanProperty activo;
+    private Long version;
     private ObservableList<EmpleadoDto> empleados;
     private List<EmpleadoDto> empleadosEliminados;
     private Boolean modificado;
-    private Long version;
 
-    public TipoPlanillaDTO() {
+    public TipoPlanillaDto() {
         this.id = new SimpleStringProperty("");
         this.codigo = new SimpleStringProperty("");
         this.descripcion = new SimpleStringProperty("");
-        this.cantidadPlanillasMes = new SimpleStringProperty("");
+        this.planillaPorMes = new SimpleStringProperty("");
         this.activo = new SimpleBooleanProperty(true);
         this.modificado = false;
-        this.empleados = FXCollections.observableArrayList();
-        this.empleadosEliminados = new ArrayList<>();
-    }
-    
-    public TipoPlanillaDTO(TipoPlanilla tipoPlanilla) {
-        
-        this();
-        this.id.set(tipoPlanilla.getTplaId().toString());
-        this.codigo.set(tipoPlanilla.getTplaCodigo());
-        this.activo.set(tipoPlanilla.getTplaEstado().equals("A"));
-        this.descripcion.set(tipoPlanilla.getTplaDescripcion());
-        this.cantidadPlanillasMes.set(tipoPlanilla.getTplaPlaxmes().toString());
-        this.version = tipoPlanilla.getTplaVersion();
-        
+        empleados = FXCollections.observableArrayList();
+        empleadosEliminados = new ArrayList<>();
     }
 
     public Long getId() {
-        if (this.id.get() != null && !this.id.get().isBlank()) {
+        if (this.id.get() != null && !this.id.get().isEmpty()) {
             return Long.valueOf(this.id.get());
         } else {
             return null;
@@ -56,11 +49,7 @@ public class TipoPlanillaDTO {
     }
 
     public void setId(Long id) {
-        if (id != null) {
-            this.id.set(id.toString());
-        } else {
-            this.id.set("");
-        }
+        this.id.set(id.toString());
     }
 
     public String getCodigo() {
@@ -79,20 +68,40 @@ public class TipoPlanillaDTO {
         this.descripcion.set(descripcion);
     }
 
-    public Integer getPlanillasXMes() {
-        if (this.planillasXMes.get() != null && !this.planillasXMes.get().isBlank()) {
-            return Integer.valueOf(this.planillasXMes.get());
+    public Integer getPlanillaPorMes() {
+        if (this.planillaPorMes.get() != null && !this.planillaPorMes.get().isEmpty()) {
+            return Integer.valueOf(this.planillaPorMes.get());
         } else {
             return null;
         }
     }
 
-    public void setPlanillasXMes(Integer planillasXMes) {
-        if (planillasXMes != null) {
-            this.planillasXMes.set(planillasXMes.toString());
-        } else {
-            this.planillasXMes.set("");
-        }
+    public void setPlanillaPorMes(Integer planillaPorMes) {
+        this.planillaPorMes.set(planillaPorMes.toString());
+    }
+
+    public Integer getAnoUltimaPlanilla() {
+        return anoUltimaPlanilla;
+    }
+
+    public void setAnoUltimaPlanilla(Integer anoUltimaPlanilla) {
+        this.anoUltimaPlanilla = anoUltimaPlanilla;
+    }
+
+    public Integer getMesUltimaPlanilla() {
+        return mesUltimaPlanilla;
+    }
+
+    public void setMesUltimaPlanilla(Integer mesUltimaPlanilla) {
+        this.mesUltimaPlanilla = mesUltimaPlanilla;
+    }
+
+    public Integer getNumeroUltimaPlanilla() {
+        return numeroUltimaPlanilla;
+    }
+
+    public void setNumeroUltimaPlanilla(Integer numeroUltimaPlanilla) {
+        this.numeroUltimaPlanilla = numeroUltimaPlanilla;
     }
 
     public Boolean getActivo() {
@@ -103,53 +112,54 @@ public class TipoPlanillaDTO {
         this.activo.set(activo);
     }
 
-     public ObservableList<EmpleadoDto> getEmpleados() {
-        return empleados;
-    }
-
-    public void setEmpleados(ObservableList<EmpleadoDto> empleados) {
-        this.empleados = empleados;
-    }
-
-    public StringProperty getIdProperty() {
-        return id;
-    }
-
-    public StringProperty getCodigoProperty() {
-        return codigo;
-    }
-
-    public StringProperty getDescripcionProperty() {
-        return descripcion;
-    }
-
-    public StringProperty getPlanillasXMesProperty() {
-        return planillasXMes;
-    }
-    
-    public StringProperty getCantidadPlanillasMesProperty() {
-        return cantidadPlanillasMes;
-    }
-    
-    public Integer getCantidadPlanillasMes() {
-        String val = cantidadPlanillasMes.get();
-        return (val != null && !val.isBlank()) ? Integer.valueOf(val) : null;
-    }
-
-    public void setCantidadPlanillasMes(Integer cantidadPlanillasMes) {
-        this.cantidadPlanillasMes.set(cantidadPlanillasMes != null ? cantidadPlanillasMes.toString() : "");
-    }
-
-    public BooleanProperty getActivoProperty() {
-        return activo;
-    }
-
     public Long getVersion() {
         return version;
     }
 
     public void setVersion(Long version) {
         this.version = version;
+    }
+
+    public Boolean getModificado() {
+        return modificado;
+    }
+
+    public void setModificado(Boolean modificado) {
+        this.modificado = modificado;
+    }
+
+    // TODO
+    public StringProperty getIdProperty() {
+        return id;
+    }
+
+    // TODO
+    public StringProperty getCodigoProperty() {
+        return codigo;
+    }
+
+    // TODO
+    public StringProperty getDescripcionProperty() {
+        return descripcion;
+    }
+
+    // TODO
+    public StringProperty getPlanillaPorMesProperty() {
+        return planillaPorMes;
+    }
+
+    // TODO
+    public BooleanProperty getActivoProperty() {
+        return activo;
+    }
+
+    public ObservableList<EmpleadoDto> getEmpleados() {
+        return empleados;
+    }
+
+    // TODO
+    public void setEmpleados(ObservableList<EmpleadoDto> empleados) {
+        this.empleados = empleados;
     }
 
     public List<EmpleadoDto> getEmpleadosEliminados() {
@@ -160,33 +170,31 @@ public class TipoPlanillaDTO {
         this.empleadosEliminados = empleadosEliminados;
     }
 
-    public Boolean getModificado() {
-        return modificado;
-    }
-
-    public void setModificado(Boolean modificado) {
-        this.modificado = modificado;
-    }
-    
-    
-    
     @Override
     public int hashCode() {
-        return Objects.hashCode(this.id.get());
+        int hash = 3;
+        hash = 29 * hash + Objects.hashCode(this.id);
+        return hash;
     }
 
     @Override
     public boolean equals(Object obj) {
-        if (this == obj) return true;
-        if (obj == null || getClass() != obj.getClass()) return false;
-        final TipoPlanillaDTO other = (TipoPlanillaDTO) obj;
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final TipoPlanillaDto other = (TipoPlanillaDto) obj;
         return Objects.equals(this.id.get(), other.id.get());
     }
 
     @Override
     public String toString() {
-        return "TipoPlanillaDto{" + "id=" + id.get() + ", codigo=" + codigo.get()
-                + ", descripcion=" + descripcion.get() + ", cantidadPlanillasMes=" + cantidadPlanillasMes.get() + '}';
+        return "TipoPlanillaDto{" + "codigo=" + codigo + ", descripcion=" + descripcion + '}';
     }
-}
 
+}

@@ -4,114 +4,88 @@ import cr.ac.una.unaplanilla.model.EmpleadoDto;
 import cr.ac.una.unaplanilla.service.EmpleadoService;
 import cr.ac.una.unaplanilla.util.AppContext;
 import cr.ac.una.unaplanilla.util.FlowController;
-import cr.ac.una.unaplanilla.util.Formato;
 import cr.ac.una.unaplanilla.util.Mensaje;
 import cr.ac.una.unaplanilla.util.Respuesta;
-import io.github.palexdev.materialfx.controls.MFXButton;
-import io.github.palexdev.materialfx.controls.MFXPasswordField;
-import io.github.palexdev.materialfx.controls.MFXTextField;
 import java.net.URL;
 import java.util.ResourceBundle;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Alert;
 import javafx.scene.image.ImageView;
-import javafx.scene.input.KeyCode;
-import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
+import io.github.palexdev.materialfx.controls.MFXButton;
+import io.github.palexdev.materialfx.controls.MFXPasswordField;
+import io.github.palexdev.materialfx.controls.MFXTextField;
 
 /**
  * FXML Controller class
  *
- * @author USUARIO UNA PZ
+ * @author cbcar
  */
-public class LoginController extends Controller implements Initializable {
+public class LogInController extends Controller implements Initializable {
+
+    @FXML
+    private AnchorPane root;
+    @FXML
+    private MFXTextField txfUsuario;
+    @FXML
+    private MFXPasswordField psfClave;
+    @FXML
+    private MFXButton btnCancelar;
+    @FXML
+    private MFXButton btnIngresar;
+    @FXML
+    private ImageView imvFondo;
 
     /**
      * Initializes the controller class.
      */
-    
-    @FXML
-    private ImageView imvFondo;
-    
-    @FXML
-    private AnchorPane root;
-    @FXML
-    private MFXButton btnCancelar;
-    @FXML
-    private MFXTextField txtUsuario;
-    @FXML
-    private MFXPasswordField txtClave;
-    
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        //TODO
         imvFondo.fitHeightProperty().bind(root.heightProperty());
         imvFondo.fitWidthProperty().bind(root.widthProperty());
-        
-        txtUsuario.delegateSetTextFormatter(Formato.getInstance().letrasFormat(30));
-        txtClave.delegateSetTextFormatter(Formato.getInstance().letrasFormat(30));
-        
-        txtUsuario.clear();
-        txtClave.clear();
-        txtUsuario.requestFocus();
-    }    
+    }
 
     @FXML
     private void onActionBtnCancelar(ActionEvent event) {
-        ((Stage)btnCancelar.getScene().getWindow()).hide(); // .close();
+        ((Stage) btnCancelar.getScene().getWindow()).close();
     }
 
     @FXML
     private void onActionBtnIngresar(ActionEvent event) {
-        
-        if (txtUsuario.getText().isBlank() || txtClave.getText().isBlank()) {
-            new Mensaje().showModal(Alert.AlertType.WARNING, "Iniciar sesión", getStage(), "Debe ingresar usuario y clave.");
-            return;
-        }
-
-        // Llamar al service
-        EmpleadoService empleadoService = new EmpleadoService();
-        Respuesta respuesta = empleadoService.login(
-                txtUsuario.getText().trim(),
-                txtClave.getText()
-        );
-        
-        if (respuesta.getEstado()) {
-            EmpleadoDto empleadoLogueado = (EmpleadoDto) respuesta.getResultado("Empleado");
-            AppContext.getInstance().set("empleado", empleadoLogueado);
-            FlowController.getInstance().goMain();
-            onActionBtnCancelar(null);
-        } else {
-            new Mensaje().showModal(Alert.AlertType.ERROR, "Iniciar sesión", getStage(), respuesta.getMensaje());
+        try {
+            if (txfUsuario.getText() == null || txfUsuario.getText().isBlank()) {
+                new Mensaje().showModal(Alert.AlertType.ERROR, "Validación Usuario", getStage(),
+                        "Es necesario digitar un usuario para ingresar al sistema.");
+            } else if (psfClave.getText() == null || psfClave.getText().isBlank()) {
+                new Mensaje().showModal(Alert.AlertType.ERROR, "Validación Usuario", getStage(),
+                        "Es necesario digitar una clave para ingresar al sistema.");
+            } else {
+                EmpleadoService empleadoService = new EmpleadoService();
+                Respuesta respuesta = empleadoService.getUsuario(txfUsuario.getText(), psfClave.getText());
+                if (respuesta.getEstado()) {
+                    // TODO
+                    AppContext.getInstance().set("Usuario", respuesta.getResultado("Usuario"));
+                    FlowController.getInstance().goMain();
+                    getStage().close();
+                } else {
+                    new Mensaje().show(Alert.AlertType.ERROR, "Validación Usuario", respuesta.getMensaje());
+                }
+            }
+        } catch (Exception ex) {
+            Logger.getLogger(LogInController.class.getName()).log(Level.SEVERE, "Error Ingresando", ex);
+            new Mensaje().show(Alert.AlertType.ERROR, "LogIn", "Error ingresando al sistema.");
         }
     }
 
     @Override
-    public void initialize() {}
-
-    @FXML
-    private void onKeyPressedEnterUsuario(KeyEvent event) {
-        if (event.getCode() == KeyCode.ENTER) {
-            if (!txtClave.getText().isBlank()) {
-                onActionBtnIngresar(null);
-            } else {
-                txtClave.requestFocus();
-            }
-        }
+    public void initialize() {
+        txfUsuario.clear();
+        psfClave.clear();
     }
 
-    @FXML
-    private void onKeyPressedEnterClave(KeyEvent event) {
-        if (event.getCode() == KeyCode.ENTER) {
-            if (!txtUsuario.getText().isBlank()) {
-                onActionBtnIngresar(null);
-            } else {
-                txtUsuario.requestFocus();
-            }
-        }
-    }
-    
 }

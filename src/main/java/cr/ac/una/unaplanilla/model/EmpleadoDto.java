@@ -1,5 +1,6 @@
 package cr.ac.una.unaplanilla.model;
 
+import jakarta.json.bind.annotation.JsonbTransient;
 import java.time.LocalDate;
 import java.util.Objects;
 import javafx.beans.property.BooleanProperty;
@@ -9,6 +10,10 @@ import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 
+/**
+ *
+ * @author cbcar
+ */
 public class EmpleadoDto {
 
     private StringProperty id;
@@ -26,6 +31,7 @@ public class EmpleadoDto {
     private BooleanProperty activo;
     private Long version;
     private Boolean modificado;
+    
 
     public EmpleadoDto() {
         this.id = new SimpleStringProperty("");
@@ -33,7 +39,7 @@ public class EmpleadoDto {
         this.primerApellido = new SimpleStringProperty("");
         this.segundoApellido = new SimpleStringProperty("");
         this.cedula = new SimpleStringProperty("");
-        this.genero = new SimpleObjectProperty<>("");
+        this.genero = new SimpleObjectProperty("M");
         this.correo = new SimpleStringProperty("");
         this.administrador = new SimpleBooleanProperty(false);
         this.usuario = new SimpleStringProperty("");
@@ -43,32 +49,6 @@ public class EmpleadoDto {
         this.activo = new SimpleBooleanProperty(true);
         this.modificado = false;
     }
-
-    public EmpleadoDto(Empleado empleado) {
-        this();
-        this.id.set(empleado.getId().toString());
-        this.nombre.set(empleado.getNombre());
-        this.primerApellido.set(empleado.getPrimerApellido());
-        this.segundoApellido.set(empleado.getSegundoApellido());
-        this.administrador.set(empleado.getAdministrador().equals("S"));
-        this.activo.set(empleado.getEstado().equals("A"));
-        this.cedula.set(empleado.getCedula());
-        this.genero.set(empleado.getGenero());
-        this.correo.set(empleado.getCorreo());
-        
-        this.usuario.set(
-            Objects.toString(empleado.getUsuario(), "")
-        );
-
-        this.clave.set(
-            Objects.toString(empleado.getClave(), "")
-        );
-        this.fechaIngreso.set(empleado.getFechaIngreso());
-        this.fechaSalida.set(empleado.getFechaSalida());
-        this.version = empleado.getVersion();
-    }
-    
-    
 
     public Long getId() {
         if (this.id.get() != null && !this.id.get().isBlank()) {
@@ -142,28 +122,17 @@ public class EmpleadoDto {
         return usuario.get();
     }
 
-//    public void setUsuario(String usuario) {
-//        this.usuario.set(usuario);
-//    }
     public void setUsuario(String usuario) {
-    this.usuario.set(
-        Objects.toString(usuario, "")
-    );
-}
+        this.usuario.set(usuario);
+    }
 
     public String getClave() {
         return clave.get();
     }
 
-//    public void setClave(String clave) {
-//        this.clave.set(clave);
-//    }
-    
     public void setClave(String clave) {
-    this.clave.set(
-        Objects.toString(clave, "")
-    );
-}
+        this.clave.set(clave);
+    }
 
     public LocalDate getFechaIngreso() {
         return fechaIngreso.get();
@@ -189,54 +158,67 @@ public class EmpleadoDto {
         this.activo.set(activo);
     }
 
+    @JsonbTransient
     public StringProperty getIdProperty() {
         return id;
     }
 
+    @JsonbTransient
     public StringProperty getNombreProperty() {
         return nombre;
     }
 
+    @JsonbTransient
     public StringProperty getPrimerApellidoProperty() {
         return primerApellido;
     }
 
+    @JsonbTransient
     public StringProperty getSegundoApellidoProperty() {
         return segundoApellido;
     }
 
+    @JsonbTransient
     public StringProperty getCedulaProperty() {
         return cedula;
     }
 
+    @JsonbTransient
     public ObjectProperty<String> getGeneroProperty() {
         return genero;
     }
 
+    @JsonbTransient
     public StringProperty getCorreoProperty() {
         return correo;
     }
 
+    @JsonbTransient
     public BooleanProperty getAdministradorProperty() {
         return administrador;
     }
 
+    @JsonbTransient
     public StringProperty getUsuarioProperty() {
         return usuario;
     }
 
+    @JsonbTransient
     public StringProperty getClaveProperty() {
         return clave;
     }
 
+    @JsonbTransient
     public ObjectProperty<LocalDate> getFechaIngresoProperty() {
         return fechaIngreso;
     }
 
+    @JsonbTransient
     public ObjectProperty<LocalDate> getFechaSalidaProperty() {
         return fechaSalida;
     }
 
+    @JsonbTransient
     public BooleanProperty getActivoProperty() {
         return activo;
     }
@@ -256,29 +238,32 @@ public class EmpleadoDto {
     public void setModificado(Boolean modificado) {
         this.modificado = modificado;
     }
-    
-    
 
     @Override
     public int hashCode() {
-        int hash = 3;
-        hash = 23 * hash + Objects.hashCode(this.id);
+        int hash = 7;
+        hash = 97 * hash + Objects.hashCode(this.id);
         return hash;
     }
 
     @Override
     public boolean equals(Object obj) {
-        if (this == obj) return true;
-        if (obj == null || getClass() != obj.getClass()) return false;
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
         final EmpleadoDto other = (EmpleadoDto) obj;
         return Objects.equals(this.id.get(), other.id.get());
     }
 
     @Override
     public String toString() {
-        return "EmpleadoDto{id=" + id.get()
-                + ", nombre=" + nombre.get()
-                + ", primerApellido=" + primerApellido.get()
-                + ", cedula=" + cedula.get() + "}";
+        return "EmpleadoDto{" + "id=" + id + ", nombre=" + nombre + ", primerApellido=" + primerApellido + ", cedula=" + cedula + '}';
     }
+
 }

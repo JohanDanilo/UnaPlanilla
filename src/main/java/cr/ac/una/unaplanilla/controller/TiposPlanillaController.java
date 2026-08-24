@@ -1,14 +1,18 @@
 package cr.ac.una.unaplanilla.controller;
 
 import cr.ac.una.unaplanilla.model.EmpleadoDto;
-import cr.ac.una.unaplanilla.model.TipoPlanillaDTO;
+import cr.ac.una.unaplanilla.model.TipoPlanillaDto;
 import cr.ac.una.unaplanilla.service.EmpleadoService;
 import cr.ac.una.unaplanilla.service.TipoPlanillaService;
-import cr.ac.una.unaplanilla.util.BindingUtils;
+import cr.ac.una.unaplanilla.util.FlowController;
 import cr.ac.una.unaplanilla.util.Formato;
 import cr.ac.una.unaplanilla.util.Mensaje;
 import cr.ac.una.unaplanilla.util.Respuesta;
+import io.github.palexdev.materialfx.controls.MFXButton;
 import io.github.palexdev.materialfx.controls.MFXCheckbox;
+import io.github.palexdev.materialfx.controls.MFXComboBox;
+import io.github.palexdev.materialfx.controls.MFXDatePicker;
+import io.github.palexdev.materialfx.controls.MFXPasswordField;
 import io.github.palexdev.materialfx.controls.MFXTextField;
 import java.net.URL;
 import java.util.ArrayList;
@@ -20,29 +24,36 @@ import java.util.logging.Logger;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleObjectProperty;
-import javafx.collections.ObservableList;
+import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
+import javafx.event.Event;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
-import javafx.scene.control.Accordion;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
+import javafx.scene.control.Tab;
+import javafx.scene.control.TabPane;
+import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
-import javafx.scene.control.TableCell;
-import javafx.scene.control.TitledPane;
-import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.layout.AnchorPane;
 
 /**
  * FXML Controller class
  *
- * @author USUARIO UNA PZ
+ * @author cbcar
  */
 public class TiposPlanillaController extends Controller implements Initializable {
 
+    @FXML
+    private AnchorPane root;
+    @FXML
+    private TabPane tbpTipoPlanilla;
+    @FXML
+    private Tab tbpTipoPlanillas;
     @FXML
     private MFXTextField txtId;
     @FXML
@@ -52,82 +63,66 @@ public class TiposPlanillaController extends Controller implements Initializable
     @FXML
     private MFXTextField txtDescripcion;
     @FXML
-    private MFXTextField txtCantidadPlanillasMes;
+    private MFXTextField txtPlanillasMes;
+    @FXML
+    private Tab tbpInclusionEmpleados;
     @FXML
     private MFXTextField txtIdEmpleado;
     @FXML
     private MFXTextField txtNombreEmpleado;
     @FXML
-    private TableView<EmpleadoDto> listaEmpleados;
+    private MFXButton btnAgregarEmpleado;
+    @FXML
+    private TableView<EmpleadoDto> tbvEmpleados;
+    @FXML
+    private TableColumn<EmpleadoDto, String> tbcCodigo;
+    @FXML
+    private TableColumn<EmpleadoDto, String> tbcNombre;
+    @FXML
+    private TableColumn<EmpleadoDto, Boolean> tbcEliminar;
+    @FXML
+    private MFXButton btnNuevo;
+    @FXML
+    private MFXButton btnBuscar;
+    @FXML
+    private MFXButton btnEliminar;
+    @FXML
+    private MFXButton btnGuardar;
 
-    private TipoPlanillaDTO tipoPlanilla;
-    private ObjectProperty<TipoPlanillaDTO> tipoPlanillaProperty = new SimpleObjectProperty<>();
+    private TipoPlanillaDto tipoPlanillaDto;
+    private ObjectProperty<TipoPlanillaDto> tipoPlanillaProperty = new SimpleObjectProperty<>();
+    private EmpleadoDto empleadoDto;
+    private ObjectProperty<EmpleadoDto> empleadoProperty = new SimpleObjectProperty<>();
     private List<Node> requeridos = new ArrayList<>();
 
-    @FXML
-    private TableColumn<EmpleadoDto, String> colId;
-    @FXML
-    private TableColumn<EmpleadoDto, String> colNombre;
-    @FXML
-    private TableColumn<EmpleadoDto, Boolean> colEliminar;
-
-    private TipoPlanillaDTO tiposPlanillaDto;
-
-    private ObservableList<EmpleadoDto> empleados;
-    
-    @FXML
-    private TitledPane panelTiposPlanillas;
-    @FXML
-    private TitledPane panelEmpleados;
-    @FXML
-    private Accordion acordeonModulos;
-
-    private EmpleadoDto empleado;
-    private ObjectProperty<EmpleadoDto> empleadoProperty = new SimpleObjectProperty<>();
-
+    /**
+     * Initializes the controller class.
+     */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        acordeonModulos.setExpandedPane(panelTiposPlanillas);
         txtId.delegateSetTextFormatter(Formato.getInstance().integerFormat());
-        txtCodigo.delegateSetTextFormatter(Formato.getInstance().maxLengthFormat(10));
-        txtDescripcion.delegateSetTextFormatter(Formato.getInstance().maxLengthFormat(100));
-        txtCantidadPlanillasMes.delegateSetTextFormatter(Formato.getInstance().integerFormat());
-        txtIdEmpleado.delegateSetTextFormatter(Formato.getInstance().integerFormat());
-        txtNombreEmpleado.delegateSetTextFormatter(Formato.getInstance().letrasFormat(30));
-
-        empleado = new EmpleadoDto();
-        this.tipoPlanilla = new TipoPlanillaDTO();
-        configurarTablaEmpleados();
+        txtCodigo.delegateSetTextFormatter(Formato.getInstance().maxLengthFormat(4));
+        txtDescripcion.delegateSetTextFormatter(Formato.getInstance().letrasFormat(40));
+        txtPlanillasMes.delegateSetTextFormatter(Formato.getInstance().integerFormat());
+        this.tipoPlanillaDto = new TipoPlanillaDto();
         bindTipoPlanilla();
+        this.empleadoDto = new EmpleadoDto();
         bindEmpleado();
         cargarValoresDefecto();
         indicarRequeridos();
 
-        colId.setCellValueFactory((cd) -> cd.getValue().getIdProperty());
-        colNombre.setCellValueFactory((cd) -> cd.getValue().getNombreProperty());
-        colEliminar.setCellValueFactory((cd) -> new SimpleBooleanProperty(cd.getValue() != null));
-        colEliminar.setCellFactory((p) -> new ButtonCell());
+        txtIdEmpleado.delegateSetTextFormatter(Formato.getInstance().integerFormat());
+        tbcCodigo.setCellValueFactory((cd) -> cd.getValue().getIdProperty());
+        tbcNombre.setCellValueFactory((cd) -> cd.getValue().getNombreProperty());
+        tbcEliminar.setCellValueFactory((cd) -> new SimpleBooleanProperty(cd.getValue() != null));
+        tbcEliminar.setCellFactory((cd) -> new ButtonCell());
 
-        listaEmpleados.getSelectionModel().selectedItemProperty().addListener((ov, oldValue, newValue) -> {
+        tbvEmpleados.getSelectionModel().selectedItemProperty().addListener((ov, oldValue, newValue) -> {
             if (newValue != null) {
-                this.empleado = newValue;
-                this.empleadoProperty.setValue(this.empleado);
-
+                this.empleadoDto = newValue;
+                this.empleadoProperty.setValue(this.empleadoDto);
             }
         });
-
-        panelEmpleados.expandedProperty().addListener((observable, oldValue, newValue) -> {
-            if (newValue) {
-                if (this.tipoPlanilla.getId() == null) {
-                    
-                    new Mensaje().showModal(Alert.AlertType.WARNING,
-                        "TipoPlanilla", getStage(), "Debe cargar una planilla antes de ver empleados");
-                    panelEmpleados.setExpanded(false);
-                    panelTiposPlanillas.setExpanded(true);
-                }
-            }
-        });
-
     }
 
     @Override
@@ -135,21 +130,14 @@ public class TiposPlanillaController extends Controller implements Initializable
 
     }
 
-    private void configurarTablaEmpleados() {
-        colId = (TableColumn<EmpleadoDto, String>) listaEmpleados.getColumns().get(0);
-        colNombre = (TableColumn<EmpleadoDto, String>) listaEmpleados.getColumns().get(1);
-        colId.setCellValueFactory(new PropertyValueFactory<>("id"));
-        colNombre.setCellValueFactory(new PropertyValueFactory<>("nombre"));
-    }
-
     private void bindTipoPlanilla() {
         try {
-            tipoPlanillaProperty.addListener((ov, oldVal, newVal) -> {
+            tipoPlanillaProperty.addListener((obs, oldVal, newVal) -> {
                 if (oldVal != null) {
                     txtId.textProperty().unbind();
                     txtCodigo.textProperty().unbindBidirectional(oldVal.getCodigoProperty());
                     txtDescripcion.textProperty().unbindBidirectional(oldVal.getDescripcionProperty());
-                    txtCantidadPlanillasMes.textProperty().unbindBidirectional(oldVal.getCantidadPlanillasMesProperty());
+                    txtPlanillasMes.textProperty().unbindBidirectional(oldVal.getPlanillaPorMesProperty());
                     chkActivo.selectedProperty().unbindBidirectional(oldVal.getActivoProperty());
                 }
                 if (newVal != null) {
@@ -159,75 +147,99 @@ public class TiposPlanillaController extends Controller implements Initializable
                     }
                     txtCodigo.textProperty().bindBidirectional(newVal.getCodigoProperty());
                     txtDescripcion.textProperty().bindBidirectional(newVal.getDescripcionProperty());
-                    txtCantidadPlanillasMes.textProperty().bindBidirectional(newVal.getCantidadPlanillasMesProperty());
+                    txtPlanillasMes.textProperty().bindBidirectional(newVal.getPlanillaPorMesProperty());
                     chkActivo.selectedProperty().bindBidirectional(newVal.getActivoProperty());
                 }
             });
+
         } catch (Exception ex) {
-            new Mensaje().showModal(Alert.AlertType.ERROR, "Error al realizar el bindeo", getStage(), "Ocurrió un error al realizar el bindeo");
+            new Mensaje().showModal(Alert.AlertType.ERROR, "Error al realizar el bindeo", getStage(),
+                    "Ocurrió un error al realizar el bindeo.");
         }
     }
 
     private void bindEmpleado() {
         try {
-            empleadoProperty.addListener((ov, oldVal, newVal) -> {
-
+            empleadoProperty.addListener((obs, oldVal, newVal) -> {
                 if (oldVal != null) {
-
                     txtIdEmpleado.textProperty().unbind();
-
                     txtNombreEmpleado.textProperty().unbindBidirectional(oldVal.getNombreProperty());
-
                 }
-
                 if (newVal != null) {
-
-                    if (newVal.getIdProperty().get() != null && !newVal.getIdProperty().get().isBlank()) {
+                    if (newVal.getIdProperty().get() != null
+                            && !newVal.getIdProperty().get().isBlank()) {
                         txtIdEmpleado.textProperty().bind(newVal.getIdProperty());
                     }
-
                     txtNombreEmpleado.textProperty().bindBidirectional(newVal.getNombreProperty());
-
                 }
             });
 
         } catch (Exception ex) {
-            Logger.getLogger(EmpleadosController.class.getName())
-                    .log(Level.SEVERE, "Error realizando bindings.", ex);
-
-            new Mensaje().showModal(
-                    Alert.AlertType.ERROR,
-                    "Error al realizar el bindeo",
-                    getStage(),
-                    "Ocurrió un error al realizar el bindeo."
-            );
+            new Mensaje().showModal(Alert.AlertType.ERROR, "Error al realizar el bindeo", getStage(),
+                    "Ocurrió un error al realizar el bindeo.");
         }
     }
 
     private void cargarValoresDefecto() {
-        this.tipoPlanilla = new TipoPlanillaDTO();
-        this.tipoPlanilla.setActivo(Boolean.TRUE);
-        this.tipoPlanillaProperty.setValue(this.tipoPlanilla);
+        this.tipoPlanillaDto = new TipoPlanillaDto();
+        this.tipoPlanillaDto.setActivo(Boolean.TRUE);
+        this.tipoPlanillaProperty.setValue(this.tipoPlanillaDto);
         txtId.clear();
         txtId.requestFocus();
         limpiarEmpleado();
         cargarEmpleados();
     }
 
+    private void limpiarEmpleado() {
+        tbvEmpleados.getSelectionModel().select(null);
+        this.empleadoDto = new EmpleadoDto();
+        this.empleadoProperty.setValue(this.empleadoDto);
+        txtIdEmpleado.clear();
+        txtIdEmpleado.requestFocus();
+    }
+
+    private void cargarEmpleados() {
+        tbvEmpleados.getItems().clear();
+        tbvEmpleados.setItems(this.tipoPlanillaDto.getEmpleados());
+        tbvEmpleados.refresh();
+    }
+
     private void indicarRequeridos() {
         requeridos.clear();
-        requeridos.addAll(Arrays.asList(txtCodigo, txtDescripcion, txtCantidadPlanillasMes));
+        requeridos.addAll(Arrays.asList(txtDescripcion, txtCodigo, txtPlanillasMes));
     }
 
     public String validarRequeridos() {
-        boolean validos = true;
-        StringBuilder invalidos = new StringBuilder();
+        Boolean validos = true;
+        String invalidos = "";
         for (Node node : requeridos) {
-            if (node instanceof MFXTextField campo && (campo.getText() == null || campo.getText().isBlank())) {
-                if (!validos) {
-                    invalidos.append(", ");
+            if (node instanceof MFXTextField && (((MFXTextField) node).getText() == null || ((MFXTextField) node).getText().isBlank())) {
+                if (validos) {
+                    invalidos += ((MFXTextField) node).getFloatingText();
+                } else {
+                    invalidos += "," + ((MFXTextField) node).getFloatingText();
                 }
-                invalidos.append(campo.getFloatingText());
+                validos = false;
+            } else if (node instanceof MFXPasswordField && (((MFXPasswordField) node).getText() == null || ((MFXPasswordField) node).getText().isBlank())) {
+                if (validos) {
+                    invalidos += ((MFXPasswordField) node).getFloatingText();
+                } else {
+                    invalidos += "," + ((MFXPasswordField) node).getFloatingText();
+                }
+                validos = false;
+            } else if (node instanceof MFXDatePicker && ((MFXDatePicker) node).getValue() == null) {
+                if (validos) {
+                    invalidos += ((MFXDatePicker) node).getFloatingText();
+                } else {
+                    invalidos += "," + ((MFXDatePicker) node).getFloatingText();
+                }
+                validos = false;
+            } else if (node instanceof MFXComboBox && ((MFXComboBox) node).getSelectionModel().getSelectedIndex() < 0) {
+                if (validos) {
+                    invalidos += ((MFXComboBox) node).getFloatingText();
+                } else {
+                    invalidos += "," + ((MFXComboBox) node).getFloatingText();
+                }
                 validos = false;
             }
         }
@@ -238,124 +250,8 @@ public class TiposPlanillaController extends Controller implements Initializable
         }
     }
 
-    private void cargarEmpleado(Long id) {
-        try {
-            EmpleadoService empleadoService = new EmpleadoService();
-            Respuesta respuesta = empleadoService.getEmpleado(id);
-            if (respuesta.getEstado()) {
-                this.empleado = (EmpleadoDto) respuesta.getResultado("Empleado");
-                this.empleadoProperty.set(this.empleado);
-            } else {
-                new Mensaje().showModal(Alert.AlertType.ERROR, "Buscar empleado", getStage(), respuesta.getMensaje());
-            }
-        } catch (Exception ex) {
-            Logger.getLogger(EmpleadosController.class.getName())
-                    .log(Level.SEVERE, "Error cargando el empleado", ex);
-            new Mensaje().showModal(Alert.AlertType.ERROR, "Cargar Empleado", getStage(),
-                    "Ocurrió un error cargando el empleado");
-        }
-    }
-
     @FXML
-    private void selectionChangeAcEmp(ActionEvent event) {
-        if (panelEmpleados.isExpanded()) {
-            limpiarEmpleado();
-        } else {
-            if (new Mensaje().showConfirmation("Nuevo Tipo Planilla", getStage(), "¿Está seguro que desea limpiar el registro?")) {
-                cargarValoresDefecto();
-            }
-        }
-
-    }
-
-    @FXML
-    private void onBtnNuevo(ActionEvent event) {
-        if (panelEmpleados.isExpanded()) {
-            limpiarEmpleado();
-        } else {
-            if (new Mensaje().showConfirmation("Nuevo Tipo Planilla", getStage(), "¿Está seguro que desea limpiar el registro?")) {
-                cargarValoresDefecto();
-            }
-        }
-
-    }
-
-    @FXML
-    private void onBtnBuscar(ActionEvent event) {
-        if (!txtId.getText().isBlank()) {
-            cargarTipoPlanilla(Long.valueOf(txtId.getText()));
-        } else {
-            new Mensaje().showModal(Alert.AlertType.WARNING, "Buscar Tipo Planilla", getStage(), "Ingrese un ID para buscar");
-        }
-    }
-
-    @FXML
-    private void onBtnGuardar(ActionEvent event) {
-        try {
-            String invalidos = validarRequeridos();
-
-            if (!invalidos.isBlank()) {
-                new Mensaje().showModal(Alert.AlertType.WARNING, "Guardar TipoPlanilla",
-                        getStage(), invalidos);
-            } else {
-                TipoPlanillaService empleadoService = new TipoPlanillaService();
-                Respuesta respuesta = empleadoService.guardarTipoPlanilla(this.tipoPlanilla);
-                if (respuesta.getEstado()) {
-                    this.tipoPlanilla = (TipoPlanillaDTO) respuesta.getResultado("TipoPlanilla");
-                    this.tipoPlanillaProperty.set(this.tipoPlanilla);
-                    validarRequeridos();
-                } else {
-                    new Mensaje().showModal(Alert.AlertType.ERROR, "Guardar TipoPlanilla", getStage(), respuesta.getMensaje());
-                }
-
-                new Mensaje().showModal(Alert.AlertType.INFORMATION, "Guardar TipoPlanilla",
-                        getStage(), "El Tipo de Planilla se guardó correctamente.");
-            }
-        } catch (Exception ex) {
-            Logger.getLogger(TiposPlanillaController.class.getName()).
-                    log(Level.SEVERE, "Error guardando el TipoPlanilla.", ex);
-            new Mensaje().showModal(Alert.AlertType.ERROR, "Guardar TipoPlanilla", getStage(),
-                    "Ocurrió un error guardando el TipoPlanilla.");
-        }
-    }
-
-    @FXML
-    private void onBtnEliminar(ActionEvent event) {
-
-        try {
-            String invalidos = validarRequeridos();
-            if (!invalidos.isBlank()) {
-                new Mensaje().showModal(Alert.AlertType.WARNING, "Eliminar tipoPlanilla", getStage(), "Favor consultar el tipoPlanilla a eliminar");
-            } else {
-                TipoPlanillaService tipoPlanillaService = new TipoPlanillaService();
-                Respuesta respuesta = tipoPlanillaService.eliminarTipoPlanilla(this.tipoPlanilla.getId());
-                if (respuesta.getEstado()) {
-                    cargarValoresDefecto();
-                    new Mensaje().showModal(Alert.AlertType.INFORMATION, "Eliminar tipoPlanilla", getStage(), "El tipoPlanilla se eliminó correctamente");
-                } else {
-                    new Mensaje().showModal(Alert.AlertType.ERROR, "Eliminar tipoPlanilla", getStage(), respuesta.getMensaje());
-                }
-
-            }
-
-        } catch (Exception ex) {
-            Logger.getLogger(TiposPlanillaController.class.getName()).log(Level.SEVERE,
-                    "Error eliminando el tipoPlanilla.", ex);
-            new Mensaje().showModal(Alert.AlertType.ERROR, "Eliminar tipoPlanilla", getStage(),
-                    "Ocurrió un error eliminando el tipoPlanilla.");
-        }
-
-    }
-
-    @FXML
-    private void onKeyPressedIdEmpleado(KeyEvent event) {
-        if (event.getCode() == KeyCode.ENTER && !txtIdEmpleado.getText().isBlank()) {
-            cargarEmpleado(Long.valueOf(txtIdEmpleado.getText()));
-        }
-    }
-
-    @FXML
-    private void onKeyPressedId(KeyEvent event) {
+    private void onKeyPressTxtId(KeyEvent event) {
         if (event.getCode() == KeyCode.ENTER && !txtId.getText().isBlank()) {
             cargarTipoPlanilla(Long.valueOf(txtId.getText()));
         }
@@ -363,68 +259,151 @@ public class TiposPlanillaController extends Controller implements Initializable
 
     private void cargarTipoPlanilla(Long id) {
         try {
-            TipoPlanillaService tipoPlanillaService = new TipoPlanillaService();
-            Respuesta respuesta = tipoPlanillaService.getTipoPlanilla(id);
+            TipoPlanillaService service = new TipoPlanillaService();
+            Respuesta respuesta = service.getTipoPlanilla(id);
             if (respuesta.getEstado()) {
-                this.tipoPlanilla = (TipoPlanillaDTO) respuesta.getResultado("TipoPlanilla");
-                this.tipoPlanillaProperty.set(this.tipoPlanilla);
+                this.tipoPlanillaDto = (TipoPlanillaDto) respuesta.getResultado("TipoPlanilla");
+                this.tipoPlanillaProperty.setValue(this.tipoPlanillaDto);
                 validarRequeridos();
                 cargarEmpleados();
             } else {
-                new Mensaje().showModal(Alert.AlertType.ERROR, "Cargar tipoPlanilla", getStage(), respuesta.getMensaje());
+                new Mensaje().showModal(Alert.AlertType.ERROR, "Cargar Tipo Planilla", getStage(), respuesta.getMensaje());
             }
         } catch (Exception ex) {
-            Logger.getLogger(EmpleadosController.class.getName())
-                    .log(Level.SEVERE, "Error cargando el empleado", ex);
-            new Mensaje().showModal(Alert.AlertType.ERROR, "Cargar tipoPlanilla", getStage(),
-                    "Ocurrió un error cargando el empleado");
+            Logger.getLogger(TiposPlanillaController.class.getName()).log(Level.SEVERE, "Error consultando el tipo de planilla.", ex);
+            new Mensaje().showModal(Alert.AlertType.ERROR, "Cargar Tipo Planilla", getStage(), "Ocurrio un error consultando el tipo de planilla.");
+        }
+    }
+
+    private void cargarEmpleado(Long id) {
+        try {
+            EmpleadoService empleadoService = new EmpleadoService();
+            Respuesta respuesta = empleadoService.getEmpleado(id);
+            if (respuesta.getEstado()) {
+                this.empleadoDto = (EmpleadoDto) respuesta.getResultado("Empleado");
+                this.empleadoProperty.setValue(this.empleadoDto);
+            } else {
+                new Mensaje().showModal(Alert.AlertType.ERROR, "Buscar Empleado", getStage(), respuesta.getMensaje());
+            }
+        } catch (Exception ex) {
+            Logger.getLogger(EmpleadosController.class.getName()).log(Level.SEVERE, "Error buscando el empleado.", ex);
+            new Mensaje().showModal(Alert.AlertType.ERROR, "Buscar Empleado", getStage(), "Ocurrió un error buscando el empleado.");
         }
     }
 
     @FXML
-    private void onBtnAgregarEmpleado(ActionEvent event) {
-        if (this.empleado.getId() == null || this.empleado.getNombre().isBlank()) {
-            new Mensaje().showModal(Alert.AlertType.WARNING, "Agregar Empleado", getStage(),
-                    "Es necesario cargar un empleado para agregaro a la lista.");
-        } else if (listaEmpleados.getItems() == null
-                || listaEmpleados.getItems().stream().noneMatch((e) -> e.equals(this.empleado))) {
-            this.empleado.setModificado(true);
-            listaEmpleados.getItems().add(this.empleado);
-            listaEmpleados.refresh();
+    private void onKeyPressedTxtCodigo(KeyEvent event) {
+    }
 
+    @FXML
+    private void onKeyPressedTxtIdEmpleado(KeyEvent event) {
+        if (event.getCode() == KeyCode.ENTER && !txtIdEmpleado.getText().isBlank()) {
+            cargarEmpleado(Long.valueOf(txtIdEmpleado.getText()));
         }
     }
 
-    private void limpiarEmpleado() {
-        listaEmpleados.getSelectionModel().select(null);
-        this.empleado = new EmpleadoDto();
-        this.empleadoProperty.setValue(this.empleado);
-        txtIdEmpleado.clear();
-        txtIdEmpleado.requestFocus();
+    @FXML
+    private void onActionBtnAgregarEmpleado(ActionEvent event) {
+        if (this.empleadoDto.getId() == null || this.empleadoDto.getNombre().isBlank()) {
+            new Mensaje().showModal(Alert.AlertType.WARNING, "Agregar Empleado", getStage(), "Es necesario cargar un empleado para agregarlo a lista.");
+        } else if (tbvEmpleados.getItems().stream().noneMatch(e -> e.equals(this.empleadoDto))) {
+            this.empleadoDto.setModificado(true);
+            tbvEmpleados.getItems().add(this.empleadoDto);
+            tbvEmpleados.refresh();
+        }
     }
 
-    private void cargarEmpleados() {
-        listaEmpleados.getItems().clear();
-        listaEmpleados.setItems(this.tipoPlanilla.getEmpleados());
-        listaEmpleados.refresh();
+    @FXML
+    private void selectionChangeTabEmp(Event event) {
+        if (tbpInclusionEmpleados.isSelected()) {
+            if (this.tipoPlanillaDto.getId() == null) {
+                new Mensaje().showModal(Alert.AlertType.WARNING, "Agregar Empleado", getStage(),
+                        "Debe cargar el tipo de planilla al que desea agregar empleados.");
+                tbpTipoPlanilla.getSelectionModel().select(tbpTipoPlanillas);
+            }
+        }
+    }
+
+    @FXML
+    private void onActionBtnNuevo(ActionEvent event) {
+        if (tbpInclusionEmpleados.isSelected()) {
+            limpiarEmpleado();
+        } else if (new Mensaje().showConfirmation("Limpiar tipo planilla", getStage(), "¿Está seguro que desea limpiar el registro?")) {
+            cargarValoresDefecto();
+        }
+    }
+
+    @FXML
+    private void onActionBtnBuscar(ActionEvent event) {
+        BusquedaController busquedaController = (BusquedaController) FlowController.getInstance().getController("BusquedaView");
+        busquedaController.busquedaTiposPlanilla();
+        FlowController.getInstance().goViewInWindowModal("BusquedaView", getStage(), true);
+        TipoPlanillaDto tPla = (TipoPlanillaDto) busquedaController.getResultado();
+        if (tPla != null) {
+            cargarTipoPlanilla(tPla.getId());
+        }
+    }
+
+    @FXML
+    private void onActionBtnEliminar(ActionEvent event) {
+        try {
+            if (this.tipoPlanillaDto.getId() == null) {
+                new Mensaje().showModal(Alert.AlertType.ERROR, "Eliminar tipo planilla", getStage(), "Debe cargar el tipo de planilla que desea eliminar.");
+            } else {
+                TipoPlanillaService service = new TipoPlanillaService();
+                Respuesta respuesta = service.eliminarTipoPlanilla(this.tipoPlanillaDto.getId());
+                if (!respuesta.getEstado()) {
+                    new Mensaje().showModal(Alert.AlertType.ERROR, "Eliminar tipo planilla", getStage(), respuesta.getMensaje());
+                } else {
+                    new Mensaje().showModal(Alert.AlertType.INFORMATION, "Eliminar tipo planilla", getStage(), "Tipo planilla eliminado correctamente.");
+                    cargarValoresDefecto();
+                }
+            }
+        } catch (Exception ex) {
+            Logger.getLogger(TiposPlanillaController.class.getName()).log(Level.SEVERE, "Error eliminando el tipo planilla.", ex);
+            new Mensaje().showModal(Alert.AlertType.ERROR, "Eliminar tipo planilla", getStage(), "Ocurrio un error eliminando el tipo planilla.");
+        }
+    }
+
+    @FXML
+    private void onActionBtnGuardar(ActionEvent event) {
+        try {
+            String invalidos = validarRequeridos();
+            if (!invalidos.isEmpty()) {
+                new Mensaje().showModal(Alert.AlertType.ERROR, "Guardar Tipo Planilla", getStage(), invalidos);
+            } else {
+                TipoPlanillaService tipoPlanillaService = new TipoPlanillaService();
+                Respuesta respuesta = tipoPlanillaService.guardarTipoPlanilla(this.tipoPlanillaDto);
+                if (!respuesta.getEstado()) {
+                    new Mensaje().showModal(Alert.AlertType.ERROR, "Guardar Tipo Planilla", getStage(), respuesta.getMensaje());
+                } else {
+                    this.tipoPlanillaDto = (TipoPlanillaDto) respuesta.getResultado("TipoPlanilla");
+                    this.tipoPlanillaProperty.setValue(this.tipoPlanillaDto);
+                    new Mensaje().showModal(Alert.AlertType.INFORMATION, "Guardar Tipo Planilla", getStage(), "Tipo Planilla actualizada correctamente.");
+                }
+            }
+        } catch (Exception ex) {
+            Logger.getLogger(EmpleadosController.class.getName()).log(Level.SEVERE, "Error guardando el tipo de planilla.", ex);
+            new Mensaje().showModal(Alert.AlertType.ERROR, "Guardar Tipo Planilla", getStage(), "Ocurrio un error guardando el tipo de planilla.");
+        }
     }
 
     private class ButtonCell extends TableCell<EmpleadoDto, Boolean> {
 
         final Button cellButton = new Button();
 
-        public ButtonCell() {
+        ButtonCell() {
             cellButton.setPrefWidth(500);
             cellButton.getStyleClass().add("jfx-btnimg-tbveliminar");
 
-            cellButton.setOnAction((t) -> {
-                EmpleadoDto emp = ButtonCell.this.getTableView().getItems().get(ButtonCell.this.getIndex());
-                tipoPlanilla.getEmpleadosEliminados().add(emp);
-                listaEmpleados.getItems().remove(emp);
-                listaEmpleados.refresh();
+            cellButton.setOnAction((ActionEvent t) -> {
+                EmpleadoDto emp = (EmpleadoDto) ButtonCell.this.getTableView().getItems().get(ButtonCell.this.getIndex());
+                tipoPlanillaDto.getEmpleadosEliminados().add(emp);
+                tbvEmpleados.getItems().remove(emp);
+                tbvEmpleados.refresh();
             });
         }
-        
+
         @Override
         protected void updateItem(Boolean t, boolean empty) {
             super.updateItem(t, empty);
