@@ -3,7 +3,9 @@ package cr.ac.una.unaplanilla.service;
 import cr.ac.una.unaplanilla.model.EmpleadoDto;
 import cr.ac.una.unaplanilla.util.Request;
 import cr.ac.una.unaplanilla.util.Respuesta;
+import jakarta.ws.rs.core.GenericType;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -38,9 +40,23 @@ public class EmpleadoService {
     }
     
     public Respuesta getEmpleado(Long id){
-        try{
+        try {
+            Map<String, Object> parametros = new HashMap<>();
+            parametros.put("id", id);
             
-            return null;// TODO return new Respuesta(true,"","", "Empleado",empleadoDto);
+            Request request = new Request("Empleados/empleado/obtener", "/{id}", parametros);
+            
+            request.get();
+            
+            if(request.isError()){
+                return new Respuesta (false, request.getError(), "");
+            }
+            
+            EmpleadoDto empleado = (EmpleadoDto) request.readEntity(EmpleadoDto.class);
+            
+            
+            return new Respuesta(true,"","", "Empleado",empleado);
+            
         } catch (Exception ex) {
             Logger.getLogger(EmpleadoService.class.getName()).log(Level.SEVERE, "Error obteniendo el empleado [" + id + "]", ex);
             return new Respuesta(false, "Error obteniendo el empleado.", "getEmpleado " + ex.getMessage());
@@ -49,8 +65,22 @@ public class EmpleadoService {
     
     public Respuesta getEmpleados(String cedula, String nombre, String pApellido, String sApellido) {
         try {
+            Map<String,Object> parametros = new HashMap<>();
+            parametros.put("cedula", cedula);
+            parametros.put("nombre", nombre);
+            parametros.put("pApellido", pApellido);
+            parametros.put("sApellido", sApellido);
             
-            return null;// TODO return new Respuesta(true, "", "", "Empleados", empleadosDto);
+            Request request = new Request("Empleados", "/{cedula}/{nombre}/{pApellido}/{sApellido}",parametros);
+            request.get();
+            
+            if(request.isError()){
+                return new Respuesta (false, request.getError(), "");
+            }
+            
+            List<EmpleadoDto> empleadosDto = (List<EmpleadoDto>) request.readEntity(new GenericType<List<EmpleadoDto>>(){});
+            
+            return new Respuesta(true, "", "", "Empleados", empleadosDto);
         } catch (Exception ex) {
             Logger.getLogger(EmpleadoService.class.getName()).log(Level.SEVERE, "Error obteniendo empleados.", ex);
             return new Respuesta(false, "Error obteniendo empleados.", "getEmpleados " + ex.getMessage());
@@ -59,8 +89,16 @@ public class EmpleadoService {
     
     public Respuesta guardarEmpleado(EmpleadoDto empleadoDto){
         try {
+            Request request = new Request("Empleados/empleado");
+            request.post(empleadoDto);
             
-            return null;// TODO return new Respuesta(true, "", "", "Empleado", new EmpleadoDto(empleado));
+            if(request.isError()){
+                return new Respuesta (false, request.getError(), "");
+            }
+            
+            EmpleadoDto empleado = (EmpleadoDto) request.readEntity(EmpleadoDto.class);
+            
+            return new Respuesta(true, "", "", "Empleado", empleado);
         } catch (Exception ex) {
             Logger.getLogger(EmpleadoService.class.getName()).log(Level.SEVERE, "Ocurrio un error al guardar el empleado.", ex);
             return new Respuesta(false, "Ocurrio un error al guardar el empleado.", "guardarEmpleado " + ex.getMessage());
@@ -69,6 +107,17 @@ public class EmpleadoService {
     
     public Respuesta eliminarEmpleado(Long id){
         try{
+            
+            Map<String, Object> parametros = new HashMap<>();
+            parametros.put("id", id);
+            
+            Request request = new Request("Empleados/empleado", "/{id}", parametros);
+            
+            request.delete();
+            
+            if(request.isError()){
+                return new Respuesta (false, request.getError(), "");
+            }
             
             return new Respuesta(true, "", "");
         } catch (Exception ex) {
