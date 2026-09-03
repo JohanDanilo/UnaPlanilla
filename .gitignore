@@ -36,4 +36,3 @@ data/
 
 # ─── Config sensible ────────────────────
 *.env
-config/properties.ini
